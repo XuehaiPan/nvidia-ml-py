@@ -72,7 +72,8 @@ NVML_TEMPERATURE_THRESHOLD_GPU_MAX       = 3
 NVML_TEMPERATURE_THRESHOLD_ACOUSTIC_MIN  = 4
 NVML_TEMPERATURE_THRESHOLD_ACOUSTIC_CURR = 5
 NVML_TEMPERATURE_THRESHOLD_ACOUSTIC_MAX  = 6
-NVML_TEMPERATURE_THRESHOLD_COUNT         = 7
+NVML_TEMPERATURE_THRESHOLD_GPS_CURR      = 7
+NVML_TEMPERATURE_THRESHOLD_COUNT         = 8
 
 _nvmlTemperatureSensors_t = c_uint
 NVML_TEMPERATURE_GPU     = 0
@@ -718,8 +719,10 @@ NVML_FI_DEV_TEMPERATURE_GPU_MAX_TLIMIT        = 196
 
 NVML_FI_DEV_IS_MIG_MODE_INDEPENDENT_MIG_QUERY_CAPABLE   = 199
 
-NVML_FI_MAX = 200 # One greater than the largest field ID defined above
+NVML_FI_DEV_RESET_STATUS                                 = 226 # GPU reset status
+NVML_FI_DEV_DRAIN_AND_RESET_STATUS                       = 227 # GPU drain and reset status
 
+NVML_FI_MAX = 228 # One greater than the largest field ID defined above
 
 ## Enums needed for the method nvmlDeviceGetVirtualizationMode and nvmlDeviceSetVirtualizationMode
 NVML_GPU_VIRTUALIZATION_MODE_NONE        = 0  # Represents Bare Metal GPU
@@ -828,7 +831,7 @@ NVML_CC_SYSTEM_FEATURE_ENABLED = 1
 
 _nvmlConfComputeCcKeyRotationThreshAttackerAdv_t = c_uint
 NVML_CC_KEY_ROTATION_THRESH_ATTACKER_ADVANTAGE_MIN = 50
-NVML_CC_KEY_ROTATION_THRESH_ATTACKER_ADVANTAGE_MAX = 75
+NVML_CC_KEY_ROTATION_THRESH_ATTACKER_ADVANTAGE_MAX = 65
 
 # GSP firmware
 NVML_GSP_FIRMWARE_VERSION_BUF_SIZE = 0x40
