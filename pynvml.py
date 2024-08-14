@@ -286,7 +286,8 @@ NVML_VALUE_TYPE_UNSIGNED_LONG = 2
 NVML_VALUE_TYPE_UNSIGNED_LONG_LONG = 3
 NVML_VALUE_TYPE_SIGNED_LONG_LONG = 4
 NVML_VALUE_TYPE_SIGNED_INT = 5
-NVML_VALUE_TYPE_COUNT = 6
+NVML_VALUE_TYPE_UNSIGNED_SHORT = 6
+NVML_VALUE_TYPE_COUNT = 7
 
 _nvmlPerfPolicyType_t = c_uint
 NVML_PERF_POLICY_POWER = 0
@@ -379,6 +380,7 @@ NVML_DEVICE_ARCH_TURING   = 6
 NVML_DEVICE_ARCH_AMPERE   = 7
 NVML_DEVICE_ARCH_ADA      = 8
 NVML_DEVICE_ARCH_HOPPER   = 9
+NVML_DEVICE_ARCH_BLACKWELL   = 10
 NVML_DEVICE_ARCH_T23X     = 11
 NVML_DEVICE_ARCH_UNKNOWN  = 0xffffffff
 
@@ -412,6 +414,16 @@ NVML_PCIE_LINK_MAX_SPEED_8000MBPS  = 0x00000003
 NVML_PCIE_LINK_MAX_SPEED_16000MBPS = 0x00000004
 NVML_PCIE_LINK_MAX_SPEED_32000MBPS = 0x00000005
 NVML_PCIE_LINK_MAX_SPEED_64000MBPS = 0x00000006
+
+_nvmlPcieAtomicsCapability_t = c_uint
+NVML_PCIE_ATOMICS_CAP_FETCHADD32  = 0x01
+NVML_PCIE_ATOMICS_CAP_FETCHADD64  = 0x02
+NVML_PCIE_ATOMICS_CAP_SWAP32      = 0x04
+NVML_PCIE_ATOMICS_CAP_SWAP64      = 0x08
+NVML_PCIE_ATOMICS_CAP_CAS32       = 0x10
+NVML_PCIE_ATOMICS_CAP_CAS64       = 0x20
+NVML_PCIE_ATOMICS_CAP_CAS128      = 0x40
+NVML_PCIE_ATOMICS_OPS_MAX         = 7
 
 _nvmlAffinityScope_t = c_uint
 NVML_AFFINITY_SCOPE_NODE   = 0
@@ -725,7 +737,44 @@ NVML_FI_DEV_NVLINK_GET_POWER_THRESHOLD_MAX    = 199
 
 NVML_FI_DEV_IS_MIG_MODE_INDEPENDENT_MIG_QUERY_CAPABLE   = 200
 
-NVML_FI_MAX = 223 # One greater than the largest field ID defined above
+NVML_FI_DEV_NVLINK_COUNT_XMIT_PACKETS                    = 201
+NVML_FI_DEV_NVLINK_COUNT_XMIT_BYTES                      = 202
+NVML_FI_DEV_NVLINK_COUNT_RCV_PACKETS                     = 203
+NVML_FI_DEV_NVLINK_COUNT_RCV_BYTES                       = 204
+NVML_FI_DEV_NVLINK_COUNT_VL15_DROPPED                    = 205
+NVML_FI_DEV_NVLINK_COUNT_MALFORMED_PACKET_ERRORS         = 206
+NVML_FI_DEV_NVLINK_COUNT_BUFFER_OVERRUN_ERRORS           = 207
+NVML_FI_DEV_NVLINK_COUNT_RCV_ERRORS                      = 208
+NVML_FI_DEV_NVLINK_COUNT_RCV_REMOTE_ERRORS               = 209
+NVML_FI_DEV_NVLINK_COUNT_RCV_GENERAL_ERRORS              = 210
+NVML_FI_DEV_NVLINK_COUNT_LOCAL_LINK_INTEGRITY_ERRORS     = 211
+NVML_FI_DEV_NVLINK_COUNT_XMIT_DISCARDS                   = 212
+
+NVML_FI_DEV_NVLINK_COUNT_LINK_RECOVERY_SUCCESSFUL_EVENTS = 213
+NVML_FI_DEV_NVLINK_COUNT_LINK_RECOVERY_FAILED_EVENTS     = 214
+NVML_FI_DEV_NVLINK_COUNT_LINK_RECOVERY_EVENTS            = 215
+
+NVML_FI_DEV_NVLINK_COUNT_RAW_BER_LANE0                   = 216
+NVML_FI_DEV_NVLINK_COUNT_RAW_BER_LANE1                   = 217
+NVML_FI_DEV_NVLINK_COUNT_RAW_BER                         = 218
+NVML_FI_DEV_NVLINK_COUNT_EFFECTIVE_ERRORS                = 219
+NVML_FI_DEV_NVLINK_COUNT_EFFECTIVE_BER                   = 220
+NVML_FI_DEV_NVLINK_COUNT_SYMBOL_ERRORS                   = 221
+NVML_FI_DEV_NVLINK_COUNT_SYMBOL_BER                      = 222
+
+NVML_FI_DEV_NVLINK_GET_POWER_THRESHOLD_MIN               = 223
+NVML_FI_DEV_NVLINK_GET_POWER_THRESHOLD_UNITS             = 224 # Values are in the form NVML_NVLINK_LOW_POWER_THRESHOLD_UNIT_*
+NVML_FI_DEV_NVLINK_GET_POWER_THRESHOLD_SUPPORTED         = 225
+
+NVML_FI_DEV_RESET_STATUS                                 = 226 # GPU reset status
+NVML_FI_DEV_DRAIN_AND_RESET_STATUS                       = 227 # GPU drain and reset status
+NVML_FI_DEV_PCIE_OUTBOUND_ATOMICS_MASK                   = 228
+NVML_FI_DEV_PCIE_INBOUND_ATOMICS_MASK                    = 229
+
+NVML_FI_MAX = 230 # One greater than the largest field ID defined above
+
+NVML_NVLINK_LOW_POWER_THRESHOLD_UNIT_100US = 0 # NVML_FI_DEV_NVLINK_GET_POWER_THRESHOLD_UNITS
+NVML_NVLINK_LOW_POWER_THRESHOLD_UNIT_50US  = 1 # NVML_FI_DEV_NVLINK_GET_POWER_THRESHOLD_UNITS
 
 ## Enums needed for the method nvmlDeviceGetVirtualizationMode and nvmlDeviceSetVirtualizationMode
 NVML_GPU_VIRTUALIZATION_MODE_NONE        = 0  # Represents Bare Metal GPU
@@ -771,8 +820,9 @@ NVML_VGPU_CAP_EXCLUSIVE_SIZE                = 4  # vGPU profile cannot run on a 
 NVML_VGPU_CAP_COUNT                         = 5
 
 _nvmlVgpuDriverCapability_t = c_uint
-NVML_VGPU_DRIVER_CAP_HETEROGENEOUS_MULTI_VGPU          = 0  # Supports mixing of different vGPU profiles within one guest VM
-NVML_VGPU_DRIVER_CAP_COUNT                             = 1
+NVML_VGPU_DRIVER_CAP_HETEROGENEOUS_MULTI_VGPU   = 0  # Supports mixing of different vGPU profiles within one guest VM
+NVML_VGPU_DRIVER_CAP_WARM_UPDATE                = 1  # Supports FSR and warm update of vGPU host driver without terminating the running guest VM
+NVML_VGPU_DRIVER_CAP_COUNT                      = 2
 
 _nvmlDeviceVgpuCapability_t = c_uint
 NVML_DEVICE_VGPU_CAP_FRACTIONAL_MULTI_VGPU             = 0  # Query if the fractional vGPU profiles on this GPU can be used in multi-vGPU configurations
@@ -783,7 +833,8 @@ NVML_DEVICE_VGPU_CAP_WRITE_DEVICE_BUFFER_BW            = 4  # Query the GPU's wr
 NVML_DEVICE_VGPU_CAP_DEVICE_STREAMING                  = 5  # Query if vGPU profiles on the GPU supports migration data streaming
 NVML_DEVICE_VGPU_CAP_MINI_QUARTER_GPU                  = 6  # Set/Get support of mini-quarter vGPU profiles
 NVML_DEVICE_VGPU_CAP_COMPUTE_MEDIA_ENGINE_GPU          = 7  # Set/Get support for compute media engine vGPU profiles
-NVML_DEVICE_VGPU_CAP_COUNT                             = 8
+NVML_DEVICE_VGPU_CAP_WARM_UPDATE                       = 8  # Query if the GPU supports FSR and warm update
+NVML_DEVICE_VGPU_CAP_COUNT                             = 9
 
 _nvmlVgpuGuestInfoState_t = c_uint
 NVML_VGPU_INSTANCE_GUEST_INFO_STATE_UNINITIALIZED = 0
@@ -1158,6 +1209,14 @@ class nvmlPciInfo_t(_PrintableStructure):
             'pciSubSystemId' : "0x%08X",
             }
 
+class c_nvmlSystemDriverBranchInfo_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('version', c_uint),
+        ("branch", c_char * NVML_SYSTEM_DRIVER_VERSION_BUFFER_SIZE),
+    ]
+
+SystemDriverBranchInfo_v1 = 0x1000054
+
 class c_nvmlExcludedDeviceInfo_t(_PrintableStructure):
     _fields_ = [
         ('pci', nvmlPciInfo_t),
@@ -1354,6 +1413,14 @@ class c_nvmlVgpuPlacementList_v1_t(_PrintableStructure):
     ]
 
 VgpuPlacementList_v1 = 0x1000018
+
+class c_nvmlVgpuTypeBar1Info_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('version', c_uint),
+        ('bar1Size', c_ulonglong),
+    ]
+
+VgpuTypeBar1Info_v1 = 0x1000010
 
 class c_nvmlVgpuInstanceUtilizationSample_t(_PrintableStructure):
     _fields_ = [
@@ -1571,15 +1638,20 @@ class struct_c_nvmlEventSet_t(Structure):
     pass # opaque handle
 c_nvmlEventSet_t = POINTER(struct_c_nvmlEventSet_t)
 
-nvmlEventTypeSingleBitEccError     = 0x0000000000000001
-nvmlEventTypeDoubleBitEccError     = 0x0000000000000002
-nvmlEventTypePState                = 0x0000000000000004
-nvmlEventTypeXidCriticalError      = 0x0000000000000008
-nvmlEventTypeClock                 = 0x0000000000000010
-nvmlEventTypePowerSourceChange     = 0x0000000000000080
-nvmlEventMigConfigChange           = 0x0000000000000100
-nvmlEventTypeNone                  = 0x0000000000000000
-nvmlEventTypeAll                   = (
+nvmlEventTypeSingleBitEccError      = 0x0000000000000001
+nvmlEventTypeDoubleBitEccError      = 0x0000000000000002
+nvmlEventTypePState                 = 0x0000000000000004
+nvmlEventTypeXidCriticalError       = 0x0000000000000008
+nvmlEventTypeClock                  = 0x0000000000000010
+nvmlEventTypePowerSourceChange      = 0x0000000000000080
+nvmlEventMigConfigChange            = 0x0000000000000100
+nvmlEventTypeSingleBitEccErrorStorm = 0x0000000000000200
+nvmlEventTypeDramRetirementEvent    = 0x0000000000000400
+nvmlEventTypeDramRetirementFailure  = 0x0000000000000800
+nvmlEventTypeNonFatalPoisonError    = 0x0000000000001000
+nvmlEventTypeFatalPoisonError       = 0x0000000000002000
+nvmlEventTypeNone                   = 0x0000000000000000
+nvmlEventTypeAll                    = (
                                         nvmlEventTypeNone
                                         | nvmlEventTypeSingleBitEccError
                                         | nvmlEventTypeDoubleBitEccError
@@ -1588,7 +1660,12 @@ nvmlEventTypeAll                   = (
                                         | nvmlEventTypePowerSourceChange
                                         | nvmlEventTypeXidCriticalError
                                         | nvmlEventMigConfigChange
-                                     )
+                                        | nvmlEventTypeSingleBitEccErrorStorm
+                                        | nvmlEventTypeDramRetirementEvent
+                                        | nvmlEventTypeDramRetirementFailure
+                                        | nvmlEventTypeNonFatalPoisonError
+                                        | nvmlEventTypeFatalPoisonError
+                                      )
 
 ## Clock Event Reasons defines
 nvmlClocksEventReasonGpuIdle              = 0x0000000000000001
@@ -2264,6 +2341,14 @@ def nvmlSystemGetHicVersion():
     ret = fn(byref(c_count), hics)
     _nvmlCheckReturn(ret)
     return hics
+
+def nvmlSystemGetDriverBranch():
+    c_branchInfo = c_nvmlSystemDriverBranchInfo_v1_t(0)
+    c_branchInfo.version = SystemDriverBranchInfo_v1
+    fn  = _nvmlGetFunctionPointer("nvmlSystemGetDriverBranch")
+    ret = fn(byref(c_branchInfo), c_uint(NVML_SYSTEM_DRIVER_VERSION_BUFFER_SIZE))
+    _nvmlCheckReturn(ret)
+    return c_branchInfo
 
 ## Unit get functions
 def nvmlUnitGetCount():
@@ -3326,6 +3411,7 @@ def nvmlDeviceResetMemoryLockedClocks(handle):
 def nvmlDeviceGetClkMonStatus(handle, c_clkMonInfo):
     fn = _nvmlGetFunctionPointer("nvmlDeviceGetClkMonStatus")
     ret = fn(handle, c_clkMonInfo)
+    _nvmlCheckReturn(ret)
     return ret
 
 # Added in 4.304
@@ -4049,6 +4135,14 @@ def nvmlVgpuTypeGetMaxInstancesPerVm(vgpuTypeId):
     ret = fn(vgpuTypeId, byref(c_max_instances_per_vm))
     _nvmlCheckReturn(ret)
     return c_max_instances_per_vm.value
+
+def nvmlVgpuTypeGetBAR1Info(vgpuTypeId):
+    c_bar1Info = c_nvmlVgpuTypeBar1Info_v1_t(0)
+    c_bar1Info.version = VgpuTypeBar1Info_v1
+    fn  = _nvmlGetFunctionPointer("nvmlVgpuTypeGetBAR1Info")
+    ret = fn(vgpuTypeId, byref(c_bar1Info))
+    _nvmlCheckReturn(ret)
+    return c_bar1Info
 
 def nvmlDeviceGetActiveVgpus(handle):
     # first call to get the size
@@ -5184,6 +5278,7 @@ NVML_GPM_METRIC_NVJPG_5_UTIL            = 45 # Percent utilization of NVJPG 5. 0
 NVML_GPM_METRIC_NVJPG_6_UTIL            = 46 # Percent utilization of NVJPG 6. 0.0 - 100.0
 NVML_GPM_METRIC_NVJPG_7_UTIL            = 47 # Percent utilization of NVJPG 7. 0.0 - 100.0
 NVML_GPM_METRIC_NVOFA_0_UTIL            = 50 # Percent utilization of NVOFA 0. 0.0 - 100.0
+NVML_GPM_METRIC_NVOFA_1_UTIL            = 51 # Percent utilization of NVOFA 1. 0.0 - 100.0
 NVML_GPM_METRIC_NVLINK_TOTAL_RX_PER_SEC = 60 # NvLink read bandwidth for all links in MiB/sec
 NVML_GPM_METRIC_NVLINK_TOTAL_TX_PER_SEC = 61 # NvLink write bandwidth for all links in MiB/sec
 NVML_GPM_METRIC_NVLINK_L0_RX_PER_SEC    = 62 # NvLink read bandwidth for link 0 in MiB/sec
