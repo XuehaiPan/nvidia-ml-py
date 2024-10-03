@@ -1,0 +1,27 @@
+name: Synchronize from PyPI
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Run at 12:00 (Asia/Shanghai UTC+8) on Monday/Wednesday/Friday
+    - cron: "0 4 * * 1,3,5"
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Synchronize from PyPI
+        run: |
+          bash .github/workflows/sync.sh
+
+      - name: Push changes
+        run: |
+          git push --all --force
+          git push --tags --force
