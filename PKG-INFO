@@ -1,6 +1,6 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.2
 Name: nvidia-ml-py
-Version: 12.560.30
+Version: 12.570.86
 Summary: Python Bindings for the NVIDIA Management Library
 Home-page: https://forums.developer.nvidia.com
 Author: NVIDIA Corporation
@@ -17,6 +17,14 @@ Classifier: Topic :: Software Development :: Libraries :: Python Modules
 Classifier: Topic :: System :: Hardware
 Classifier: Topic :: System :: Systems Administration
 Description-Content-Type: text/markdown
+Dynamic: author
+Dynamic: author-email
+Dynamic: classifier
+Dynamic: description
+Dynamic: description-content-type
+Dynamic: home-page
+Dynamic: license
+Dynamic: summary
 
 pyNVML
 ======
