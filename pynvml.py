@@ -1,5 +1,5 @@
 #####
-# Copyright (c) 2011-2023, NVIDIA Corporation.  All rights reserved.
+# Copyright (c) 2011-2025, NVIDIA Corporation.  All rights reserved.
 #
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
@@ -791,6 +791,11 @@ NVML_FI_DEV_PCIE_OUTBOUND_ATOMICS_MASK                   = 228
 NVML_FI_DEV_PCIE_INBOUND_ATOMICS_MASK                    = 229
 NVML_FI_DEV_GET_GPU_RECOVERY_ACTION                      = 230
 
+NVML_FI_DEV_C2C_LINK_ERROR_INTR                          = 231
+NVML_FI_DEV_C2C_LINK_ERROR_REPLAY                        = 232
+NVML_FI_DEV_C2C_LINK_ERROR_REPLAY_B2B                    = 233
+NVML_FI_DEV_C2C_LINK_POWER_STATE                         = 234
+
 NVML_FI_DEV_NVLINK_COUNT_FEC_HISTORY_0                   = 235
 NVML_FI_DEV_NVLINK_COUNT_FEC_HISTORY_1                   = 236
 NVML_FI_DEV_NVLINK_COUNT_FEC_HISTORY_2                   = 237
@@ -807,26 +812,32 @@ NVML_FI_DEV_NVLINK_COUNT_FEC_HISTORY_12                  = 247
 NVML_FI_DEV_NVLINK_COUNT_FEC_HISTORY_13                  = 248
 NVML_FI_DEV_NVLINK_COUNT_FEC_HISTORY_14                  = 249
 NVML_FI_DEV_NVLINK_COUNT_FEC_HISTORY_15                  = 250
-NVML_FI_PWR_SMOOTHING_ENABLED                                   = 251 # Enablement (0/DISABLED or 1/ENABLED)
-NVML_FI_PWR_SMOOTHING_PRIV_LVL                                  = 252 # Current privilege level
-NVML_FI_PWR_SMOOTHING_IMM_RAMP_DOWN_ENABLED                     = 253 # Immediate ramp down enablement (0/DISABLED or 1/ENABLED)
-NVML_FI_PWR_SMOOTHING_APPLIED_TMP_CEIL                          = 254 # Applied TMP ceiling value
-NVML_FI_PWR_SMOOTHING_APPLIED_TMP_FLOOR                         = 255 # Applied TMP floor value
-NVML_FI_PWR_SMOOTHING_MAX_PERCENT_TMP_FLOOR_SETTING             = 256 # Max % TMP Floor value
-NVML_FI_PWR_SMOOTHING_MIN_PERCENT_TMP_FLOOR_SETTING             = 257 # Min % TMP Floor value
-NVML_FI_PWR_SMOOTHING_HW_CIRCUITRY_PERCENT_LIFETIME_REMAINING   = 258 # HW Circuitry % lifetime remaining
-NVML_FI_PWR_SMOOTHING_MAX_NUM_PRESET_PROFILES                   = 259 # Max number of preset profiles
-NVML_FI_PWR_SMOOTHING_PROFILE_PERCENT_TMP_FLOOR                 = 260 # % TMP floor for a given profile
-NVML_FI_PWR_SMOOTHING_PROFILE_RAMP_UP_RATE                      = 261 # Ramp up rate in mW/s for a given profile
-NVML_FI_PWR_SMOOTHING_PROFILE_RAMP_DOWN_RATE                    = 262 # Ramp down rate in mW/s for a given profile
-NVML_FI_PWR_SMOOTHING_PROFILE_RAMP_DOWN_HYST_VAL                = 263 # Ramp down hysteresis value in ms for a given profile
-NVML_FI_PWR_SMOOTHING_ACTIVE_PRESET_PROFILE                     = 264 # Active preset profile number
-NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_PERCENT_TMP_FLOOR          = 265 # % TMP floor for a given profile
-NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_RAMP_UP_RATE               = 266 # Ramp up rate in mW/s for a given profile
-NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_RAMP_DOWN_RATE             = 267 # Ramp down rate in mW/s for a given profile
-NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_RAMP_DOWN_HYST_VAL         = 268 # Ramp down hysteresis value in ms for a given profile
-
-NVML_FI_MAX = 269 # One greater than the largest field ID defined above
+NVML_FI_DEV_CLOCKS_EVENT_REASON_SW_POWER_CAP             = NVML_FI_DEV_PERF_POLICY_POWER
+NVML_FI_DEV_CLOCKS_EVENT_REASON_SYNC_BOOST               = NVML_FI_DEV_PERF_POLICY_SYNC_BOOST
+NVML_FI_DEV_CLOCKS_EVENT_REASON_SW_THERM_SLOWDOWN        = 251
+NVML_FI_DEV_CLOCKS_EVENT_REASON_HW_THERM_SLOWDOWN        = 252
+NVML_FI_DEV_CLOCKS_EVENT_REASON_HW_POWER_BRAKE_SLOWDOWN  = 253
+NVML_FI_DEV_POWER_SYNC_BALANCING_FREQ                    = 254
+NVML_FI_DEV_POWER_SYNC_BALANCING_AF                      = 255
+NVML_FI_PWR_SMOOTHING_ENABLED                                   = 256 # Enablement (0/DISABLED or 1/ENABLED)
+NVML_FI_PWR_SMOOTHING_PRIV_LVL                                  = 257 # Current privilege level
+NVML_FI_PWR_SMOOTHING_IMM_RAMP_DOWN_ENABLED                     = 258 # Immediate ramp down enablement (0/DISABLED or 1/ENABLED)
+NVML_FI_PWR_SMOOTHING_APPLIED_TMP_CEIL                          = 259 # Applied TMP ceiling value
+NVML_FI_PWR_SMOOTHING_APPLIED_TMP_FLOOR                         = 260 # Applied TMP floor value
+NVML_FI_PWR_SMOOTHING_MAX_PERCENT_TMP_FLOOR_SETTING             = 261 # Max % TMP Floor value
+NVML_FI_PWR_SMOOTHING_MIN_PERCENT_TMP_FLOOR_SETTING             = 262 # Min % TMP Floor value
+NVML_FI_PWR_SMOOTHING_HW_CIRCUITRY_PERCENT_LIFETIME_REMAINING   = 263 # HW Circuitry % lifetime remaining
+NVML_FI_PWR_SMOOTHING_MAX_NUM_PRESET_PROFILES                   = 264 # Max number of preset profiles
+NVML_FI_PWR_SMOOTHING_PROFILE_PERCENT_TMP_FLOOR                 = 265 # % TMP floor for a given profile
+NVML_FI_PWR_SMOOTHING_PROFILE_RAMP_UP_RATE                      = 266 # Ramp up rate in mW/s for a given profile
+NVML_FI_PWR_SMOOTHING_PROFILE_RAMP_DOWN_RATE                    = 267 # Ramp down rate in mW/s for a given profile
+NVML_FI_PWR_SMOOTHING_PROFILE_RAMP_DOWN_HYST_VAL                = 268 # Ramp down hysteresis value in ms for a given profile
+NVML_FI_PWR_SMOOTHING_ACTIVE_PRESET_PROFILE                     = 269 # Active preset profile number
+NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_PERCENT_TMP_FLOOR          = 270 # % TMP floor for a given profile
+NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_RAMP_UP_RATE               = 271 # Ramp up rate in mW/s for a given profile
+NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_RAMP_DOWN_RATE             = 272 # Ramp down rate in mW/s for a given profile
+NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_RAMP_DOWN_HYST_VAL         = 273 # Ramp down hysteresis value in ms for a given profile
+NVML_FI_MAX = 274 # One greater than the largest field ID defined above
 
 # NVML_FI_DEV_NVLINK_GET_STATE state enums
 NVML_NVLINK_STATE_INACTIVE = 0x0
@@ -835,6 +846,10 @@ NVML_NVLINK_STATE_SLEEP    = 0x2
 
 NVML_NVLINK_LOW_POWER_THRESHOLD_UNIT_100US = 0 # NVML_FI_DEV_NVLINK_GET_POWER_THRESHOLD_UNITS
 NVML_NVLINK_LOW_POWER_THRESHOLD_UNIT_50US  = 1 # NVML_FI_DEV_NVLINK_GET_POWER_THRESHOLD_UNITS
+
+# NVML_FI_DEV_C2C_LINK_POWER_STATE state enums
+NVML_C2C_POWER_STATE_FULL_POWER = 0
+NVML_C2C_POWER_STATE_LOW_POWER = 1
 
 ## Enums needed for the method nvmlDeviceGetVirtualizationMode and nvmlDeviceSetVirtualizationMode
 NVML_GPU_VIRTUALIZATION_MODE_NONE        = 0  # Represents Bare Metal GPU
@@ -895,7 +910,9 @@ NVML_DEVICE_VGPU_CAP_MINI_QUARTER_GPU                  = 6  # Set/Get support of
 NVML_DEVICE_VGPU_CAP_COMPUTE_MEDIA_ENGINE_GPU          = 7  # Set/Get support for compute media engine vGPU profiles
 NVML_DEVICE_VGPU_CAP_WARM_UPDATE                       = 8  # Query whether the GPU supports FSR and warm update
 NVML_DEVICE_VGPU_CAP_HOMOGENEOUS_PLACEMENTS            = 9  # Query whether the GPU supports reporting of placements of timesliced vGPU profiles with identical framebuffer sizes
-NVML_DEVICE_VGPU_CAP_COUNT                             = 10
+NVML_DEVICE_VGPU_CAP_MIG_TIMESLICING_SUPPORTED         = 10 # Query whether the GPU supports timesliced vGPU on MIG
+NVML_DEVICE_VGPU_CAP_MIG_TIMESLICING_ENABLED           = 11 # Set/Get MIG timesliced mode reporting, without impacting the underlying functionality
+NVML_DEVICE_VGPU_CAP_COUNT                             = 12
 
 _nvmlVgpuGuestInfoState_t = c_uint
 NVML_VGPU_INSTANCE_GUEST_INFO_STATE_UNINITIALIZED = 0
@@ -1762,20 +1779,29 @@ class c_nvmlMarginTemperature_v1_t(_PrintableStructure):
 
 nvmlMarginTemperature_v1 = 0x1000008
 
-NVML_PRM_DATA_MAX_SIZE = 496
-class c_nvmlPRMTLV_v1_t(_PrintableStructure):
-    _fields_ = [
-        ('dataSize', c_uint32),
-        ('status', c_uint32),
-        ('data', c_ubyte * NVML_PRM_DATA_MAX_SIZE),
-    ]
-    def __init__(self, size=0):
-        super(c_nvmlPRMTLV_v1_t, self).__init__(dataSize=size, status=0)
+NVML_DEVICE_UUID_ASCII_LEN  = 41
+NVML_DEVICE_UUID_BINARY_LEN = 16
 
-def nvmlDeviceReadWritePRM_v1(handle, c_info):
-    fn = _nvmlGetFunctionPointer("nvmlDeviceReadWritePRM_v1")
-    ret = fn(handle, byref(c_info))
-    _nvmlCheckReturn(ret)
+NVML_UUID_TYPE_NONE   = 0
+NVML_UUID_TYPE_ASCII  = 1
+NVML_UUID_TYPE_BINARY = 2
+
+class c_nvmlUUIDValue_t(Union):
+    _fields_ = [
+        ('str',   c_char * NVML_DEVICE_UUID_ASCII_LEN),
+        ('bytes', c_ubyte * NVML_DEVICE_UUID_BINARY_LEN),
+    ]
+
+nvmlUUID_v1 = 0x1000034
+class c_nvmlUUID_t(_PrintableStructure):
+    _fields_ = [
+        ('version', c_uint),
+        ('type', c_uint),
+        ('value', c_nvmlUUIDValue_t),
+    ]
+
+    def __init__(self):
+        super(c_nvmlUUID_t, self).__init__(version=nvmlUUID_v1)
 
 ## Event structures
 class struct_c_nvmlEventSet_t(Structure):
@@ -1875,6 +1901,199 @@ class c_nvmlEventData_t(_PrintableStructure):
     ]
     _fmt_ = {'eventType': "0x%08X"}
 
+class struct_c_nvmlSystemEventSet_t(Structure):
+    pass # opaque handle
+c_nvmlSystemEventSet_t = POINTER(struct_c_nvmlSystemEventSet_t)
+
+nvmlSystemEventTypeGpuDriverUnbind = 0x0000000000000001
+nvmlSystemEventTypeGpuDriverBind   = 0x0000000000000002
+
+nvmlSystemEventTypeCount = 2
+
+nvmlSystemEventSetCreateRequest_v1 = 0x1000010
+class c_nvmlSystemEventSetCreateRequest_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('version', c_uint),
+        ('set', c_nvmlSystemEventSet_t)
+    ]
+
+    def __init__(self):
+        super(c_nvmlSystemEventSetCreateRequest_v1_t, self).__init__(version=nvmlSystemEventSetCreateRequest_v1)
+
+nvmlSystemEventSetFreeRequest_v1 = 0x1000010
+class c_nvmlSystemEventSetFreeRequest_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('version', c_uint),
+        ('set', c_nvmlSystemEventSet_t)
+    ]
+
+    def __init__(self):
+        super(c_nvmlSystemEventSetFreeRequest_v1_t, self).__init__(version=nvmlSystemEventSetFreeRequest_v1)
+
+nvmlSystemRegisterEventRequest_v1 = 0x1000018
+class c_nvmlSystemRegisterEventRequest_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('version', c_uint),
+        ('eventTypes', c_ulonglong),
+        ('set', c_nvmlSystemEventSet_t)
+    ]
+
+    def __init__(self):
+        super(c_nvmlSystemRegisterEventRequest_v1_t, self).__init__(version=nvmlSystemRegisterEventRequest_v1)
+
+class c_nvmlSystemEventData_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('eventType', c_ulonglong),
+        ('gpuId', c_uint)
+    ]
+    _fmt_ = {'eventType': "0x%08X"}
+
+nvmlSystemEventSetWaitRequest_v1 = 0x1000020
+class c_nvmlSystemEventSetWaitRequest_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('version', c_uint),                            # input/output
+        ('timeoutms', c_uint),                          # input
+        ('set', c_nvmlSystemEventSet_t),                # input
+        ('data', POINTER(c_nvmlSystemEventData_v1_t)),  # input/output. Buffer owned by caller
+        ('dataSize', c_uint),                           # input
+        ('numEvent', c_uint)                            # output. Number of event recorded
+    ]
+
+    def __init__(self):
+        super(c_nvmlSystemEventSetWaitRequest_v1_t, self).__init__(version=nvmlSystemEventSetWaitRequest_v1)
+
+# C APIs for system events
+def c_nvmlSystemEventSetCreate(req):
+    """
+    C API binding for c_nvmlSystemEventSetFree
+    :param req: reference of c_nvmlSystemEventSetCreateRequest_v1_t
+    """
+    fn = _nvmlGetFunctionPointer("nvmlSystemEventSetCreate")
+    ret = fn(req)
+    _nvmlCheckReturn(ret)
+
+def c_nvmlSystemEventSetFree(req):
+    """
+    C API binding for c_nvmlSystemEventSetFree
+    :param req: reference of c_nvmlSystemEventSetFreeRequest_v1_t
+    """
+    fn = _nvmlGetFunctionPointer("nvmlSystemEventSetFree")
+    ret = fn(req)
+    _nvmlCheckReturn(ret)
+
+def c_nvmlSystemRegisterEvents(req):
+    """
+    C API binding for nvmlSystemRegisterEvents
+    :param req: reference of c_nvmlSystemRegisterEventRequest_v1_t
+    """
+    fn = _nvmlGetFunctionPointer("nvmlSystemRegisterEvents")
+    ret = fn(req)
+    _nvmlCheckReturn(ret)
+
+def c_nvmlSystemEventSetWait(req):
+    """
+    C API binding for nvmlSystemEventSetWait
+    :param req: reference of c_nvmlSystemEventSetWaitRequest_v1_t
+    """
+    fn = _nvmlGetFunctionPointer("nvmlSystemEventSetWait")
+    ret = fn(req)
+    # Accept TIMEOUT error
+    if ret == NVML_ERROR_TIMEOUT:
+        return ret
+    _nvmlCheckReturn(ret)
+
+# Pythonic APIs for system events
+# No Pythonic API compability support
+# When user upgrades to a new NVML Python binding,
+# user should upgrade their code against API change.
+def nvmlSystemEventSetCreate(version):
+    """
+    Create an NVML system event set.
+    :param version: The version of the request.
+    :return: A ctypes pointer to the created c_nvmlSystemEventSet_t structure.
+    """
+    if version != nvmlSystemEventSetCreateRequest_v1:
+        raise NVMLError(NVML_ERROR_ARGUMENT_VERSION_MISMATCH)
+
+    # Prepare the request structure
+    req = c_nvmlSystemEventSetCreateRequest_v1_t()
+    req.version = version
+    req.set = None  # Initialize as NULL
+
+    c_nvmlSystemEventSetCreate(byref(req))
+
+    # Return the created set handle
+    if not req.set:
+        raise NVMLError(NVML_ERROR_MEMORY)
+    return req.set
+
+def nvmlSystemEventSetFree(version, setHandle):
+    """
+    Free an NVML system event set.
+    :param version: The version of the request.
+    :param setHandle: A ctypes pointer to a c_nvmlSystemEventSet_t structure.
+    """
+    if version != nvmlSystemEventSetFreeRequest_v1:
+        raise NVMLError(NVML_ERROR_ARGUMENT_VERSION_MISMATCH)
+
+    req = c_nvmlSystemEventSetFreeRequest_v1_t()
+    req.version = version
+    req.set = setHandle
+
+    c_nvmlSystemEventSetFree(byref(req))
+
+
+def nvmlSystemRegisterEvents(version, eventTypes, setHandle):
+    """
+    Register events for an NVML system event set.
+    :param version: The version of the request.
+    :param eventTypes: A bitmask of event types to register.
+    :param setHandle: A ctypes pointer to a c_nvmlSystemEventSet_t structure.
+    """
+    if version != nvmlSystemRegisterEventRequest_v1:
+        raise NVMLError(NVML_ERROR_ARGUMENT_VERSION_MISMATCH)
+
+    req = c_nvmlSystemRegisterEventRequest_v1_t()
+    req.version = version
+    req.eventTypes = eventTypes
+    req.set = setHandle
+
+    c_nvmlSystemRegisterEvents(byref(req))
+
+
+def nvmlSystemEventSetWait(version, setHandle, timeoutMs, eventData, eventDataSize):
+    """
+    Wait for events in an NVML system event set.
+    :param version: The version of the request.
+    :param setHandle: A ctypes pointer to a c_nvmlSystemEventSet_t structure.
+    :param timeoutMs: Timeout in milliseconds.
+    :param eventData: A ctypes array of c_nvmlSystemEventData_v1_t for event data.
+    :param eventDataSize: Number of c_nvmlSystemEventData_v1_t in evenData array..
+    :return: A list of dictionaries containing event data.
+    """
+    if version != nvmlSystemEventSetWaitRequest_v1:
+        raise NVMLError(NVML_ERROR_ARGUMENT_VERSION_MISMATCH)
+
+    req = c_nvmlSystemEventSetWaitRequest_v1_t()
+    req.version = version
+    req.timeoutms = timeoutMs
+    req.set = setHandle
+    req.data = eventData
+    req.dataSize = eventDataSize
+
+    ret = c_nvmlSystemEventSetWait(byref(req))
+    if ret == NVML_ERROR_TIMEOUT:
+        return []  # Timeout, no events occurred.
+
+    # Extract event data from the buffer
+    events = []
+    for i in range(req.numEvent):
+        events.append({
+            'eventType': eventData[i].eventType,
+            'gpuId': eventData[i].gpuId
+        })
+    return events
+
 class c_nvmlAccountingStats_t(_PrintableStructure):
     _fields_ = [
         ('gpuUtilization', c_uint),
@@ -1934,6 +2153,8 @@ NVML_SCHEDULER_SW_MAX_LOG_ENTRIES           = 200
 NVML_VGPU_SCHEDULER_ARR_DEFAULT   = 0
 NVML_VGPU_SCHEDULER_ARR_DISABLE   = 1
 NVML_VGPU_SCHEDULER_ARR_ENABLE    = 2
+
+NVML_VGPU_SCHEDULER_ENGINE_TYPE_GRAPHICS    = 1
 
 class c_nvmlVgpuSchedDataWithARR_t(_PrintableStructure):
     _fields_ = [
@@ -2014,6 +2235,79 @@ class c_nvmlVgpuSchedulerCapabilities_t(_PrintableStructure):
         ('maxAvgFactorForARR',  c_uint),
         ('minAvgFactorForARR',  c_uint),
     ]
+
+class c_nvmlVgpuTypeIdInfo_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('version', c_uint),
+        ('vgpuCount', c_uint),
+        ('vgpuTypeIds', POINTER(c_uint)),
+    ]
+
+nvmlVgpuTypeIdInfo_v1 = 0x1000010
+
+class c_nvmlVgpuTypeMaxInstance_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('version', c_uint),
+        ('vgpuTypeId', c_uint),
+        ('maxInstancePerGI', c_uint),
+    ]
+
+nvmlVgpuTypeMaxInstance_v1 = 0x100000C
+
+class c_nvmlActiveVgpuInstanceInfo_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('version', c_uint),
+        ('vgpuCount', c_uint),
+        ('vgpuInstances', POINTER(c_uint)),
+    ]
+
+nvmlActiveVgpuInstanceInfo_v1 = 0x1000010
+
+class c_nvmlVgpuSchedulerState_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('version', c_uint),
+        ('engineId', c_uint),
+        ('schedulerPolicy', c_uint),
+        ('enableARRMode', c_uint),
+        ('schedulerParams', c_nvmlVgpuSchedulerSetParams_t),
+    ]
+
+nvmlVgpuSchedulerState_v1 = 0x1000018
+
+class c_nvmlVgpuSchedulerStateInfo_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('version',         c_uint),                        # input
+        ('engineId',        c_uint),                        # input. One of NVML_ENGINE_TYPE*
+        ('schedulerPolicy', c_uint),                        # output
+        ('arrMode',         c_uint),                        # output
+        ('schedulerParams', c_nvmlVgpuSchedulerParams_t),   # output
+    ]
+
+nvmlVgpuSchedulerStateInfo_v1 = 0x1000018
+
+class c_nvmlVgpuSchedulerLogInfo_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('version',         c_uint),                                                            # input
+        ('engineId',        c_uint),                                                            # input. One of NVML_ENGINE_TYPE*
+        ('schedulerPolicy', c_uint),                                                            # output
+        ('arrMode',         c_uint),                                                            # output
+        ('schedulerParams', c_nvmlVgpuSchedulerParams_t),                                       # output
+        ('entriesCount',    c_uint),                                                            # output
+        ('logEntries',      c_nvmlVgpuSchedulerLogEntry_t * NVML_SCHEDULER_SW_MAX_LOG_ENTRIES), # output
+    ]
+
+nvmlVgpuSchedulerLogInfo_v1 = 0x10025A0
+
+class c_nvmlVgpuCreatablePlacementInfo_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('version', c_uint),
+        ('vgpuTypeId', c_uint),
+        ('count', c_uint),
+        ('placementIds', POINTER(c_uint)),
+        ('placementSize', c_uint),
+    ]
+
+nvmlVgpuCreatablePlacementInfo_v1 = 0x1000020
 
 class c_nvmlFBCStats_t(Structure):
     _fields_ = [("sessionsCount", c_uint),
@@ -2323,12 +2617,12 @@ class c_nvmlConfComputeGpuCertificate_t(Structure):
                ]
 
 class c_nvmlConfComputeGpuAttestationReport_t(Structure):
-    _fields_ = [('isCecAttestationReportPresent', c_uint),
-                ('attestationReportSize', c_uint),
-                ('cecAttestationReportSize', c_uint),
-                ('nonce', c_uint8 * NVML_CC_GPU_CEC_NONCE_SIZE),
-                ('attestationReport', c_uint8 * NVML_CC_GPU_ATTESTATION_REPORT_SIZE),
-                ('cecAttestationReport', c_uint8 * NVML_CC_GPU_CEC_ATTESTATION_REPORT_SIZE),
+    _fields_ = [('isCecAttestationReportPresent', c_uint),                                   # output
+                ('attestationReportSize', c_uint),                                           # output
+                ('cecAttestationReportSize', c_uint),                                        # output
+                ('nonce', c_uint8 * NVML_CC_GPU_CEC_NONCE_SIZE),                             # input: spdm supports 32 bytes on nonce
+                ('attestationReport', c_uint8 * NVML_CC_GPU_ATTESTATION_REPORT_SIZE),        # output
+                ('cecAttestationReport', c_uint8 * NVML_CC_GPU_CEC_ATTESTATION_REPORT_SIZE), # output
                ]
 
 class c_nvmlConfComputeSetKeyRotationThresholdInfo_t(Structure):
@@ -2342,7 +2636,6 @@ class c_nvmlConfComputeGetKeyRotationThresholdInfo_t(Structure):
                 ('attackerAdvantage', c_ulong),
                ]
 ConfComputeGetKeyRotationThresholdInfo_v1 = 0x1000010
-
 
 ## string/bytes conversion for ease of use
 def convertStrBytes(func):
@@ -2638,6 +2931,20 @@ def nvmlDeviceGetHandleByUUID(uuid):
     device = c_nvmlDevice_t()
     fn = _nvmlGetFunctionPointer("nvmlDeviceGetHandleByUUID")
     ret = fn(c_uuid, byref(device))
+    _nvmlCheckReturn(ret)
+    return device
+
+@convertStrBytes
+def nvmlDeviceGetHandleByUUIDV(uuid, type):
+    c_uuid = c_nvmlUUID_t()
+    c_uuid.type = type
+    if type == NVML_UUID_TYPE_ASCII:
+        c_uuid.value.str = uuid
+    elif type == NVML_UUID_TYPE_BINARY:
+        memmove(c_uuid.value.bytes, uuid, NVML_DEVICE_UUID_BINARY_LEN)
+    device = c_nvmlDevice_t()
+    fn = _nvmlGetFunctionPointer("nvmlDeviceGetHandleByUUIDV")
+    ret = fn(byref(c_uuid), byref(device))
     _nvmlCheckReturn(ret)
     return device
 
@@ -5061,6 +5368,106 @@ def nvmlVgpuInstanceClearAccountingPids(vgpuInstance):
     _nvmlCheckReturn(ret)
     return NVML_SUCCESS
 
+def nvmlGpuInstanceGetCreatableVgpus(gpuInstance, c_vgpus):
+    c_vgpus.vgpuCount = 0;
+    fn =  _nvmlGetFunctionPointer("nvmlGpuInstanceGetCreatableVgpus")
+    ret = fn(gpuInstance, byref(c_vgpus))
+
+    if (ret == NVML_SUCCESS):
+        # special case, no supported vGPUs
+        return c_vgpus
+    elif (ret == NVML_ERROR_INSUFFICIENT_SIZE):
+        vgpu_type_ids_array = _nvmlVgpuTypeId_t * c_vgpus.vgpuCount
+        c_vgpus.vgpuTypeIds = vgpu_type_ids_array()
+        ret = fn(gpuInstance, byref(c_vgpus))
+        _nvmlCheckReturn(ret)
+
+        return c_vgpus
+    else:
+        raise NVMLError(ret)
+
+def nvmlVgpuTypeGetMaxInstancesPerGpuInstance(vgpuTypeId):
+    c_max_instances = c_nvmlVgpuTypeMaxInstance_v1_t()
+    c_max_instances.version = nvmlVgpuTypeMaxInstance_v1
+    c_max_instances.vgpuTypeId = vgpuTypeId
+    fn  = _nvmlGetFunctionPointer("nvmlVgpuTypeGetMaxInstancesPerGpuInstance")
+    ret = fn(byref(c_max_instances))
+    _nvmlCheckReturn(ret)
+    return c_max_instances.maxInstancePerGI
+
+def nvmlGpuInstanceGetActiveVgpus(gpuInstance, c_vgpu_instance_info):
+    c_vgpu_instance_info.vgpuCount = c_uint(0)
+
+    fn  = _nvmlGetFunctionPointer("nvmlGpuInstanceGetActiveVgpus")
+    ret = fn(gpuInstance, byref(c_vgpu_instance_info))
+
+    if (ret == NVML_SUCCESS):
+        # special case, no active vGPUs
+        return c_vgpu_instance_info
+    elif (ret == NVML_ERROR_INSUFFICIENT_SIZE):
+        # typical case
+        vgpu_instance_array = _nvmlVgpuInstance_t * c_vgpu_instance_info.vgpuCount
+        c_vgpu_instance_info.vgpuInstances = vgpu_instance_array()
+
+        # make the call again
+        ret = fn(gpuInstance, byref(c_vgpu_instance_info))
+        _nvmlCheckReturn(ret)
+        return c_vgpu_instance_info
+    else:
+        raise NVMLError(ret)
+
+def nvmlGpuInstanceSetVgpuSchedulerState(gpuInstance, sched_state):
+    fn = _nvmlGetFunctionPointer("nvmlGpuInstanceSetVgpuSchedulerState")
+    ret = fn(gpuInstance, byref(sched_state))
+    _nvmlCheckReturn(ret)
+    return ret
+
+def nvmlGpuInstanceGetVgpuSchedulerState(gpuInstance, c_vgpu_sched_state_info):
+    fn = _nvmlGetFunctionPointer("nvmlGpuInstanceGetVgpuSchedulerState")
+    ret = fn(gpuInstance, byref(c_vgpu_sched_state_info))
+    _nvmlCheckReturn(ret)
+    return c_vgpu_sched_state_info
+
+def nvmlGpuInstanceGetVgpuSchedulerLog(gpuInstance, c_vgpu_sched_log_info):
+    fn = _nvmlGetFunctionPointer("nvmlGpuInstanceGetVgpuSchedulerLog")
+    ret = fn(gpuInstance, byref(c_vgpu_sched_log_info))
+    _nvmlCheckReturn(ret)
+    return c_vgpu_sched_log_info
+
+def nvmlGpuInstanceGetVgpuTypeCreatablePlacements(gpuInstance, c_vgpu_placements):
+    c_max_instances = c_nvmlVgpuTypeMaxInstance_v1_t()
+    c_max_instances.version = nvmlVgpuTypeMaxInstance_v1
+    c_max_instances.vgpuTypeId = c_vgpu_placements.vgpuTypeId
+    fn  = _nvmlGetFunctionPointer("nvmlVgpuTypeGetMaxInstancesPerGpuInstance")
+    ret = fn(byref(c_max_instances))
+    _nvmlCheckReturn(ret)
+
+    c_vgpu_placements.count = c_max_instances.maxInstancePerGI
+
+    c_placements = c_uint * c_max_instances.maxInstancePerGI
+    c_vgpu_placements.placementIds = c_placements()
+    fn  = _nvmlGetFunctionPointer("nvmlGpuInstanceGetVgpuTypeCreatablePlacements")
+    ret = fn(gpuInstance, byref(c_vgpu_placements))
+    _nvmlCheckReturn(ret)
+    return c_vgpu_placements
+
+def nvmlGpuInstanceGetVgpuHeterogeneousMode(gpuInstance):
+    c_vgpuHeterogeneousMode = c_nvmlVgpuHeterogeneousMode_v1_t(0)
+    c_vgpuHeterogeneousMode.version = VgpuHeterogeneousMode_v1
+    fn = _nvmlGetFunctionPointer("nvmlGpuInstanceGetVgpuHeterogeneousMode")
+    ret = fn(gpuInstance, byref(c_vgpuHeterogeneousMode))
+    _nvmlCheckReturn(ret)
+    return c_vgpuHeterogeneousMode.mode
+
+def nvmlGpuInstanceSetVgpuHeterogeneousMode(gpuInstance, heterogeneous_mode):
+    c_vgpuHeterogeneousMode = c_nvmlVgpuHeterogeneousMode_v1_t(0)
+    c_vgpuHeterogeneousMode.version = VgpuHeterogeneousMode_v1
+    c_vgpuHeterogeneousMode.mode = heterogeneous_mode
+    fn = _nvmlGetFunctionPointer("nvmlGpuInstanceSetVgpuHeterogeneousMode")
+    ret = fn(gpuInstance, byref(c_vgpuHeterogeneousMode))
+    _nvmlCheckReturn(ret)
+    return NVML_SUCCESS
+
 def nvmlGetExcludedDeviceCount():
     c_count = c_uint()
     fn = _nvmlGetFunctionPointer("nvmlGetExcludedDeviceCount")
@@ -5653,7 +6060,117 @@ NVML_GPM_METRIC_NVLINK_L16_RX_PER_SEC       = 94 # NvLink read bandwidth for lin
 NVML_GPM_METRIC_NVLINK_L16_TX_PER_SEC       = 95 # NvLink write bandwidth for link 16 in MiB/sec
 NVML_GPM_METRIC_NVLINK_L17_RX_PER_SEC       = 96 # NvLink read bandwidth for link 17 in MiB/sec
 NVML_GPM_METRIC_NVLINK_L17_TX_PER_SEC       = 97 # NvLink write bandwidth for link 17 in MiB/sec
-NVML_GPM_METRIC_MAX                         = 98
+NVML_GPM_METRIC_C2C_TOTAL_TX_PER_SEC        = 100
+NVML_GPM_METRIC_C2C_TOTAL_RX_PER_SEC        = 101
+NVML_GPM_METRIC_C2C_DATA_TX_PER_SEC         = 102
+NVML_GPM_METRIC_C2C_DATA_RX_PER_SEC         = 103
+NVML_GPM_METRIC_C2C_LINK0_TOTAL_TX_PER_SEC  = 104
+NVML_GPM_METRIC_C2C_LINK0_TOTAL_RX_PER_SEC  = 105
+NVML_GPM_METRIC_C2C_LINK0_DATA_TX_PER_SEC   = 106
+NVML_GPM_METRIC_C2C_LINK0_DATA_RX_PER_SEC   = 107
+NVML_GPM_METRIC_C2C_LINK1_TOTAL_TX_PER_SEC  = 108
+NVML_GPM_METRIC_C2C_LINK1_TOTAL_RX_PER_SEC  = 109
+NVML_GPM_METRIC_C2C_LINK1_DATA_TX_PER_SEC   = 110
+NVML_GPM_METRIC_C2C_LINK1_DATA_RX_PER_SEC   = 111
+NVML_GPM_METRIC_C2C_LINK2_TOTAL_TX_PER_SEC  = 112
+NVML_GPM_METRIC_C2C_LINK2_TOTAL_RX_PER_SEC  = 113
+NVML_GPM_METRIC_C2C_LINK2_DATA_TX_PER_SEC   = 114
+NVML_GPM_METRIC_C2C_LINK2_DATA_RX_PER_SEC   = 115
+NVML_GPM_METRIC_C2C_LINK3_TOTAL_TX_PER_SEC  = 116
+NVML_GPM_METRIC_C2C_LINK3_TOTAL_RX_PER_SEC  = 117
+NVML_GPM_METRIC_C2C_LINK3_DATA_TX_PER_SEC   = 118
+NVML_GPM_METRIC_C2C_LINK3_DATA_RX_PER_SEC   = 119
+NVML_GPM_METRIC_C2C_LINK4_TOTAL_TX_PER_SEC  = 120
+NVML_GPM_METRIC_C2C_LINK4_TOTAL_RX_PER_SEC  = 121
+NVML_GPM_METRIC_C2C_LINK4_DATA_TX_PER_SEC   = 122
+NVML_GPM_METRIC_C2C_LINK4_DATA_RX_PER_SEC   = 123
+NVML_GPM_METRIC_C2C_LINK5_TOTAL_TX_PER_SEC  = 124
+NVML_GPM_METRIC_C2C_LINK5_TOTAL_RX_PER_SEC  = 125
+NVML_GPM_METRIC_C2C_LINK5_DATA_TX_PER_SEC   = 126
+NVML_GPM_METRIC_C2C_LINK5_DATA_RX_PER_SEC   = 127
+NVML_GPM_METRIC_C2C_LINK6_TOTAL_TX_PER_SEC  = 128
+NVML_GPM_METRIC_C2C_LINK6_TOTAL_RX_PER_SEC  = 129
+NVML_GPM_METRIC_C2C_LINK6_DATA_TX_PER_SEC   = 130
+NVML_GPM_METRIC_C2C_LINK6_DATA_RX_PER_SEC   = 131
+NVML_GPM_METRIC_C2C_LINK7_TOTAL_TX_PER_SEC  = 132
+NVML_GPM_METRIC_C2C_LINK7_TOTAL_RX_PER_SEC  = 133
+NVML_GPM_METRIC_C2C_LINK7_DATA_TX_PER_SEC   = 134
+NVML_GPM_METRIC_C2C_LINK7_DATA_RX_PER_SEC   = 135
+NVML_GPM_METRIC_C2C_LINK8_TOTAL_TX_PER_SEC  = 136
+NVML_GPM_METRIC_C2C_LINK8_TOTAL_RX_PER_SEC  = 137
+NVML_GPM_METRIC_C2C_LINK8_DATA_TX_PER_SEC   = 138
+NVML_GPM_METRIC_C2C_LINK8_DATA_RX_PER_SEC   = 139
+NVML_GPM_METRIC_C2C_LINK9_TOTAL_TX_PER_SEC  = 140
+NVML_GPM_METRIC_C2C_LINK9_TOTAL_RX_PER_SEC  = 141
+NVML_GPM_METRIC_C2C_LINK9_DATA_TX_PER_SEC   = 142
+NVML_GPM_METRIC_C2C_LINK9_DATA_RX_PER_SEC   = 143
+NVML_GPM_METRIC_C2C_LINK10_TOTAL_TX_PER_SEC = 144
+NVML_GPM_METRIC_C2C_LINK10_TOTAL_RX_PER_SEC = 145
+NVML_GPM_METRIC_C2C_LINK10_DATA_TX_PER_SEC  = 146
+NVML_GPM_METRIC_C2C_LINK10_DATA_RX_PER_SEC  = 147
+NVML_GPM_METRIC_C2C_LINK11_TOTAL_TX_PER_SEC = 148
+NVML_GPM_METRIC_C2C_LINK11_TOTAL_RX_PER_SEC = 149
+NVML_GPM_METRIC_C2C_LINK11_DATA_TX_PER_SEC  = 150
+NVML_GPM_METRIC_C2C_LINK11_DATA_RX_PER_SEC  = 151
+NVML_GPM_METRIC_C2C_LINK12_TOTAL_TX_PER_SEC = 152
+NVML_GPM_METRIC_C2C_LINK12_TOTAL_RX_PER_SEC = 153
+NVML_GPM_METRIC_C2C_LINK12_DATA_TX_PER_SEC  = 154
+NVML_GPM_METRIC_C2C_LINK12_DATA_RX_PER_SEC  = 155
+NVML_GPM_METRIC_C2C_LINK13_TOTAL_TX_PER_SEC = 156
+NVML_GPM_METRIC_C2C_LINK13_TOTAL_RX_PER_SEC = 157
+NVML_GPM_METRIC_C2C_LINK13_DATA_TX_PER_SEC  = 158
+NVML_GPM_METRIC_C2C_LINK13_DATA_RX_PER_SEC  = 159
+NVML_GPM_METRIC_HOSTMEM_CACHE_HIT           = 160
+NVML_GPM_METRIC_HOSTMEM_CACHE_MISS          = 161
+NVML_GPM_METRIC_PEERMEM_CACHE_HIT           = 162
+NVML_GPM_METRIC_PEERMEM_CACHE_MISS          = 163
+NVML_GPM_METRIC_DRAM_CACHE_HIT              = 164
+NVML_GPM_METRIC_DRAM_CACHE_MISS             = 165
+NVML_GPM_METRIC_NVENC_0_UTIL                = 166,
+NVML_GPM_METRIC_NVENC_1_UTIL                = 167,
+NVML_GPM_METRIC_NVENC_2_UTIL                = 168,
+NVML_GPM_METRIC_NVENC_3_UTIL                = 169,
+NVML_GPM_METRIC_GR0_CTXSW_CYCLES_ELAPSED    = 170,
+NVML_GPM_METRIC_GR0_CTXSW_CYCLES_ACTIVE     = 171,
+NVML_GPM_METRIC_GR0_CTXSW_REQUESTS          = 172,
+NVML_GPM_METRIC_GR0_CTXSW_CYCLES_PER_REQ    = 173,
+NVML_GPM_METRIC_GR0_CTXSW_ACTIVE_PCT        = 174,
+NVML_GPM_METRIC_GR1_CTXSW_CYCLES_ELAPSED    = 175,
+NVML_GPM_METRIC_GR1_CTXSW_CYCLES_ACTIVE     = 176,
+NVML_GPM_METRIC_GR1_CTXSW_REQUESTS          = 177,
+NVML_GPM_METRIC_GR1_CTXSW_CYCLES_PER_REQ    = 178,
+NVML_GPM_METRIC_GR1_CTXSW_ACTIVE_PCT        = 179,
+NVML_GPM_METRIC_GR2_CTXSW_CYCLES_ELAPSED    = 180,
+NVML_GPM_METRIC_GR2_CTXSW_CYCLES_ACTIVE     = 181,
+NVML_GPM_METRIC_GR2_CTXSW_REQUESTS          = 182,
+NVML_GPM_METRIC_GR2_CTXSW_CYCLES_PER_REQ    = 183,
+NVML_GPM_METRIC_GR2_CTXSW_ACTIVE_PCT        = 184,
+NVML_GPM_METRIC_GR3_CTXSW_CYCLES_ELAPSED    = 185,
+NVML_GPM_METRIC_GR3_CTXSW_CYCLES_ACTIVE     = 186,
+NVML_GPM_METRIC_GR3_CTXSW_REQUESTS          = 187,
+NVML_GPM_METRIC_GR3_CTXSW_CYCLES_PER_REQ    = 188,
+NVML_GPM_METRIC_GR3_CTXSW_ACTIVE_PCT        = 189,
+NVML_GPM_METRIC_GR4_CTXSW_CYCLES_ELAPSED    = 190,
+NVML_GPM_METRIC_GR4_CTXSW_CYCLES_ACTIVE     = 191,
+NVML_GPM_METRIC_GR4_CTXSW_REQUESTS          = 192,
+NVML_GPM_METRIC_GR4_CTXSW_CYCLES_PER_REQ    = 193,
+NVML_GPM_METRIC_GR4_CTXSW_ACTIVE_PCT        = 194,
+NVML_GPM_METRIC_GR5_CTXSW_CYCLES_ELAPSED    = 195,
+NVML_GPM_METRIC_GR5_CTXSW_CYCLES_ACTIVE     = 196,
+NVML_GPM_METRIC_GR5_CTXSW_REQUESTS          = 197,
+NVML_GPM_METRIC_GR5_CTXSW_CYCLES_PER_REQ    = 198,
+NVML_GPM_METRIC_GR5_CTXSW_ACTIVE_PCT        = 199,
+NVML_GPM_METRIC_GR6_CTXSW_CYCLES_ELAPSED    = 200,
+NVML_GPM_METRIC_GR6_CTXSW_CYCLES_ACTIVE     = 201,
+NVML_GPM_METRIC_GR6_CTXSW_REQUESTS          = 202,
+NVML_GPM_METRIC_GR6_CTXSW_CYCLES_PER_REQ    = 203,
+NVML_GPM_METRIC_GR6_CTXSW_ACTIVE_PCT        = 204,
+NVML_GPM_METRIC_GR7_CTXSW_CYCLES_ELAPSED    = 205,
+NVML_GPM_METRIC_GR7_CTXSW_CYCLES_ACTIVE     = 206,
+NVML_GPM_METRIC_GR7_CTXSW_REQUESTS          = 207,
+NVML_GPM_METRIC_GR7_CTXSW_CYCLES_PER_REQ    = 208,
+NVML_GPM_METRIC_GR7_CTXSW_ACTIVE_PCT        = 209,
+NVML_GPM_METRIC_MAX                         = 210
 
 ## Structs
 

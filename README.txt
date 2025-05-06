@@ -215,9 +215,27 @@ Version 11.520
 Version 11.525
 - Added new functions for NVML 11.525
 
+Version 12.535
+- Added new functions for NVML 12.535. See NVML documentation for more information.
+
+Version 12.550
+- Added new functions for NVML 12.550. See NVML documentation for more information.
+
+Version 12.555
+- Added new functions for NVML 12.555. See NVML documentation for more information.
+
+Version 12.560
+- Added new functions for NVML 12.560. See NVML documentation for more information.
+
+Version 12.565
+- Added new functions for NVML 12.565. See NVML documentation for more information.
+
+Version 12.575
+- Added new functions for NVML 12.575. See NVML documentation for more information.
+
 COPYRIGHT
 ---------
-Copyright (c) 2011-2023, NVIDIA Corporation.  All rights reserved.
+Copyright (c) 2011-2025, NVIDIA Corporation.  All rights reserved.
 
 LICENSE
 -------
