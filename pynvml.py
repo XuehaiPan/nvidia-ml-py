@@ -1762,6 +1762,21 @@ class c_nvmlMarginTemperature_v1_t(_PrintableStructure):
 
 nvmlMarginTemperature_v1 = 0x1000008
 
+NVML_PRM_DATA_MAX_SIZE = 496
+class c_nvmlPRMTLV_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('dataSize', c_uint32),
+        ('status', c_uint32),
+        ('data', c_ubyte * NVML_PRM_DATA_MAX_SIZE),
+    ]
+    def __init__(self, size=0):
+        super(c_nvmlPRMTLV_v1_t, self).__init__(dataSize=size, status=0)
+
+def nvmlDeviceReadWritePRM_v1(handle, c_info):
+    fn = _nvmlGetFunctionPointer("nvmlDeviceReadWritePRM_v1")
+    ret = fn(handle, byref(c_info))
+    _nvmlCheckReturn(ret)
+
 ## Event structures
 class struct_c_nvmlEventSet_t(Structure):
     pass # opaque handle
@@ -2035,10 +2050,14 @@ NVML_GPU_INSTANCE_PROFILE_6_SLICE      = 0x6
 NVML_GPU_INSTANCE_PROFILE_1_SLICE_REV1 = 0x7
 NVML_GPU_INSTANCE_PROFILE_2_SLICE_REV1 = 0x8
 NVML_GPU_INSTANCE_PROFILE_1_SLICE_REV2 = 0x9
-NVML_GPU_INSTANCE_PROFILE_1_SLICE_GFX  = 0xA
-NVML_GPU_INSTANCE_PROFILE_2_SLICE_GFX  = 0xB
-NVML_GPU_INSTANCE_PROFILE_4_SLICE_GFX  = 0xC
-NVML_GPU_INSTANCE_PROFILE_COUNT        = 0xD
+NVML_GPU_INSTANCE_PROFILE_1_SLICE_GFX    = 0xA
+NVML_GPU_INSTANCE_PROFILE_2_SLICE_GFX    = 0xB
+NVML_GPU_INSTANCE_PROFILE_4_SLICE_GFX    = 0xC
+NVML_GPU_INSTANCE_PROFILE_1_SLICE_NO_ME  = 0xD
+NVML_GPU_INSTANCE_PROFILE_2_SLICE_NO_ME  = 0xE
+NVML_GPU_INSTANCE_PROFILE_1_SLICE_ALL_ME = 0xF
+NVML_GPU_INSTANCE_PROFILE_2_SLICE_ALL_ME = 0x10
+NVML_GPU_INSTANCE_PROFILE_COUNT          = 0x11
 
 class c_nvmlGpuInstancePlacement_t(Structure):
     _fields_ = [("start", c_uint),
@@ -5936,7 +5955,24 @@ class c_nvmlPlatformInfo_v1_t(_PrintableStructure):
     def __init__(self):
         super(c_nvmlPlatformInfo_v1_t, self).__init__(version=nvmlPlatformInfo_v1)
 
+class c_nvmlPlatformInfo_v2_t(_PrintableStructure):
+    _fields_ = [
+        ('version', c_uint),
+        ('ibGuid', c_char * 16),
+        ('chassisSerialNumber', c_char * 16),
+        ('slotNumber', c_char),
+        ('trayIndex', c_char),
+        ('hostId', c_char),
+        ('peerType', c_char),
+        ('moduleId', c_char)
+    ]
+
+    def __init__(self):
+        super(c_nvmlPlatformInfo_v2_t, self).__init__(version=nvmlPlatformInfo_v2)
+
 nvmlPlatformInfo_v1 = 0x100002c
+nvmlPlatformInfo_v2 = 0x200002c
+
 def nvmlDeviceGetPlatformInfo(device, platformInfo):
     fn = _nvmlGetFunctionPointer("nvmlDeviceGetPlatformInfo")
     ret = fn(device, platformInfo)
