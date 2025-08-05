@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: nvidia-ml-py
-Version: 12.575.51
+Version: 13.580.65
 Summary: Python Bindings for the NVIDIA Management Library
 Home-page: https://forums.developer.nvidia.com
 Author: NVIDIA Corporation
@@ -260,6 +260,11 @@ Version 12.565
 
 Version 12.575
 - Added new functions for NVML 12.575. See NVML documentation for more information.
+
+Version 13.580
+- Major version increased to 13.
+- Several APIs are now deprecated and will be removed in a future release. Please see NVML documentation for more information.
+- Added new functions for NVML 13.580. See NVML documentation for more information.
 
 COPYRIGHT
 ---------

@@ -233,6 +233,11 @@ Version 12.565
 Version 12.575
 - Added new functions for NVML 12.575. See NVML documentation for more information.
 
+Version 13.580
+- Major version increased to 13.
+- Several APIs are now deprecated and will be removed in a future release. Please see NVML documentation for more information.
+- Added new functions for NVML 13.580. See NVML documentation for more information.
+
 COPYRIGHT
 ---------
 Copyright (c) 2011-2025, NVIDIA Corporation.  All rights reserved.
