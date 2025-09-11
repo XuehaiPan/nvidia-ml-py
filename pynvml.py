@@ -813,31 +813,31 @@ NVML_FI_DEV_NVLINK_COUNT_FEC_HISTORY_12                  = 247
 NVML_FI_DEV_NVLINK_COUNT_FEC_HISTORY_13                  = 248
 NVML_FI_DEV_NVLINK_COUNT_FEC_HISTORY_14                  = 249
 NVML_FI_DEV_NVLINK_COUNT_FEC_HISTORY_15                  = 250
+NVML_FI_PWR_SMOOTHING_ENABLED                                   = 251 # Enablement (0/DISABLED or 1/ENABLED)
+NVML_FI_PWR_SMOOTHING_PRIV_LVL                                  = 252 # Current privilege level
+NVML_FI_PWR_SMOOTHING_IMM_RAMP_DOWN_ENABLED                     = 253 # Immediate ramp down enablement (0/DISABLED or 1/ENABLED)
+NVML_FI_PWR_SMOOTHING_APPLIED_TMP_CEIL                          = 254 # Applied TMP ceiling value
+NVML_FI_PWR_SMOOTHING_APPLIED_TMP_FLOOR                         = 255 # Applied TMP floor value
+NVML_FI_PWR_SMOOTHING_MAX_PERCENT_TMP_FLOOR_SETTING             = 256 # Max % TMP Floor value
+NVML_FI_PWR_SMOOTHING_MIN_PERCENT_TMP_FLOOR_SETTING             = 257 # Min % TMP Floor value
+NVML_FI_PWR_SMOOTHING_HW_CIRCUITRY_PERCENT_LIFETIME_REMAINING   = 258 # HW Circuitry % lifetime remaining
+NVML_FI_PWR_SMOOTHING_MAX_NUM_PRESET_PROFILES                   = 259 # Max number of preset profiles
+NVML_FI_PWR_SMOOTHING_PROFILE_PERCENT_TMP_FLOOR                 = 260 # % TMP floor for a given profile
+NVML_FI_PWR_SMOOTHING_PROFILE_RAMP_UP_RATE                      = 261 # Ramp up rate in mW/s for a given profile
+NVML_FI_PWR_SMOOTHING_PROFILE_RAMP_DOWN_RATE                    = 262 # Ramp down rate in mW/s for a given profile
+NVML_FI_PWR_SMOOTHING_PROFILE_RAMP_DOWN_HYST_VAL                = 263 # Ramp down hysteresis value in ms for a given profile
+NVML_FI_PWR_SMOOTHING_ACTIVE_PRESET_PROFILE                     = 264 # Active preset profile number
+NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_PERCENT_TMP_FLOOR          = 265 # % TMP floor for a given profile
+NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_RAMP_UP_RATE               = 266 # Ramp up rate in mW/s for a given profile
+NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_RAMP_DOWN_RATE             = 267 # Ramp down rate in mW/s for a given profile
+NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_RAMP_DOWN_HYST_VAL         = 268 # Ramp down hysteresis value in ms for a given profile
 NVML_FI_DEV_CLOCKS_EVENT_REASON_SW_POWER_CAP             = NVML_FI_DEV_PERF_POLICY_POWER
 NVML_FI_DEV_CLOCKS_EVENT_REASON_SYNC_BOOST               = NVML_FI_DEV_PERF_POLICY_SYNC_BOOST
-NVML_FI_DEV_CLOCKS_EVENT_REASON_SW_THERM_SLOWDOWN        = 251
-NVML_FI_DEV_CLOCKS_EVENT_REASON_HW_THERM_SLOWDOWN        = 252
-NVML_FI_DEV_CLOCKS_EVENT_REASON_HW_POWER_BRAKE_SLOWDOWN  = 253
-NVML_FI_DEV_POWER_SYNC_BALANCING_FREQ                    = 254
-NVML_FI_DEV_POWER_SYNC_BALANCING_AF                      = 255
-NVML_FI_PWR_SMOOTHING_ENABLED                                   = 256 # Enablement (0/DISABLED or 1/ENABLED)
-NVML_FI_PWR_SMOOTHING_PRIV_LVL                                  = 257 # Current privilege level
-NVML_FI_PWR_SMOOTHING_IMM_RAMP_DOWN_ENABLED                     = 258 # Immediate ramp down enablement (0/DISABLED or 1/ENABLED)
-NVML_FI_PWR_SMOOTHING_APPLIED_TMP_CEIL                          = 259 # Applied TMP ceiling value
-NVML_FI_PWR_SMOOTHING_APPLIED_TMP_FLOOR                         = 260 # Applied TMP floor value
-NVML_FI_PWR_SMOOTHING_MAX_PERCENT_TMP_FLOOR_SETTING             = 261 # Max % TMP Floor value
-NVML_FI_PWR_SMOOTHING_MIN_PERCENT_TMP_FLOOR_SETTING             = 262 # Min % TMP Floor value
-NVML_FI_PWR_SMOOTHING_HW_CIRCUITRY_PERCENT_LIFETIME_REMAINING   = 263 # HW Circuitry % lifetime remaining
-NVML_FI_PWR_SMOOTHING_MAX_NUM_PRESET_PROFILES                   = 264 # Max number of preset profiles
-NVML_FI_PWR_SMOOTHING_PROFILE_PERCENT_TMP_FLOOR                 = 265 # % TMP floor for a given profile
-NVML_FI_PWR_SMOOTHING_PROFILE_RAMP_UP_RATE                      = 266 # Ramp up rate in mW/s for a given profile
-NVML_FI_PWR_SMOOTHING_PROFILE_RAMP_DOWN_RATE                    = 267 # Ramp down rate in mW/s for a given profile
-NVML_FI_PWR_SMOOTHING_PROFILE_RAMP_DOWN_HYST_VAL                = 268 # Ramp down hysteresis value in ms for a given profile
-NVML_FI_PWR_SMOOTHING_ACTIVE_PRESET_PROFILE                     = 269 # Active preset profile number
-NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_PERCENT_TMP_FLOOR          = 270 # % TMP floor for a given profile
-NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_RAMP_UP_RATE               = 271 # Ramp up rate in mW/s for a given profile
-NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_RAMP_DOWN_RATE             = 272 # Ramp down rate in mW/s for a given profile
-NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_RAMP_DOWN_HYST_VAL         = 273 # Ramp down hysteresis value in ms for a given profile
+NVML_FI_DEV_CLOCKS_EVENT_REASON_SW_THERM_SLOWDOWN        = 269
+NVML_FI_DEV_CLOCKS_EVENT_REASON_HW_THERM_SLOWDOWN        = 270
+NVML_FI_DEV_CLOCKS_EVENT_REASON_HW_POWER_BRAKE_SLOWDOWN  = 271
+NVML_FI_DEV_POWER_SYNC_BALANCING_FREQ                    = 272
+NVML_FI_DEV_POWER_SYNC_BALANCING_AF                      = 273
 NVML_FI_MAX = 274 # One greater than the largest field ID defined above
 
 # NVML_FI_DEV_NVLINK_GET_STATE state enums
@@ -6497,6 +6497,8 @@ NVML_GPU_FABRIC_HEALTH_MASK_INCORRECT_CONFIGURATION_INCORRECT_SYSGUID    = 2
 NVML_GPU_FABRIC_HEALTH_MASK_INCORRECT_CONFIGURATION_INCORRECT_CHASSIS_SN = 3
 NVML_GPU_FABRIC_HEALTH_MASK_INCORRECT_CONFIGURATION_NO_PARTITION         = 4
 NVML_GPU_FABRIC_HEALTH_MASK_INCORRECT_CONFIGURATION_INSUFFICIENT_NVLINKS = 5
+NVML_GPU_FABRIC_HEALTH_MASK_INCORRECT_CONFIGURATION_INCOMPATIBLE_GPU_FW  = 6
+NVML_GPU_FABRIC_HEALTH_MASK_INCORRECT_CONFIURATION_INVALID_LOCATION      = 7
 NVML_GPU_FABRIC_HEALTH_MASK_SHIFT_INCORRECT_CONFIGURATION                = 8
 NVML_GPU_FABRIC_HEALTH_MASK_WIDTH_INCORRECT_CONFIGURATION                = 0xf
 
@@ -6681,6 +6683,13 @@ def nvmlDeviceGetPlatformInfo(device, platformInfo):
     ret = fn(device, platformInfo)
     _nvmlCheckReturn(ret)
     return NVML_SUCCESS
+
+NVML_DEVICE_HOSTNAME_BUFFER_SIZE = 64
+
+class c_nvmlHostname_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('value', c_char * NVML_DEVICE_HOSTNAME_BUFFER_SIZE),
+    ]
 
 class c_nvmlMask255_t(_PrintableStructure):
     _fields_ = [
@@ -6920,3 +6929,18 @@ def nvmlDeviceGetRepairStatus(device):
     _nvmlCheckReturn(ret)
     return [c_status.bChannelRepairPending, c_status.bTpcRepairPending]
 
+@convertStrBytes
+def nvmlDeviceSetHostname_v1(device, hostname):
+    c_hostname = c_nvmlHostname_v1_t()
+    fn = _nvmlGetFunctionPointer("nvmlDeviceSetHostname_v1")
+    c_hostname.value = hostname
+    ret = fn(device, byref(c_hostname))
+    _nvmlCheckReturn(ret)
+    return None
+
+def nvmlDeviceGetHostname_v1(device):
+    c_hostname = c_nvmlHostname_v1_t()
+    fn = _nvmlGetFunctionPointer("nvmlDeviceGetHostname_v1")
+    ret = fn(device, byref(c_hostname))
+    _nvmlCheckReturn(ret)
+    return c_hostname.value
