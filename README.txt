@@ -239,6 +239,9 @@ Version 13.580
 - Added new functions for NVML 13.580. See NVML documentation for more information.
 - Added a new constant named "NVML_GPU_FABRIC_HEALTH_MASK_INCORRECT_CONFIGURATION_INVALID_LOCATION" to fix a typo in the constant names.
 
+Version 13.590
+- Added new functions for NVML 13.590. See NVML documentation for more information.
+
 COPYRIGHT
 ---------
 Copyright (c) 2011-2025, NVIDIA Corporation.  All rights reserved.
