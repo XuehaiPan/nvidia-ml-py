@@ -237,6 +237,7 @@ Version 13.580
 - Major version increased to 13.
 - Several APIs are now deprecated and will be removed in a future release. Please see NVML documentation for more information.
 - Added new functions for NVML 13.580. See NVML documentation for more information.
+- Added a new constant named "NVML_GPU_FABRIC_HEALTH_MASK_INCORRECT_CONFIGURATION_INVALID_LOCATION" to fix a typo in the constant names.
 
 COPYRIGHT
 ---------
