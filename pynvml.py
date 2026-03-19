@@ -53,7 +53,7 @@ NVML_BRAND_GEFORCE             = 5
 NVML_BRAND_TITAN               = 6
 NVML_BRAND_NVIDIA_VAPPS        = 7   # NVIDIA Virtual Applications
 NVML_BRAND_NVIDIA_VPC          = 8   # NVIDIA Virtual PC
-NVML_BRAND_NVIDIA_VCS          = 9   # NVIDIA Virtual Compute Server
+NVML_BRAND_NVIDIA_VCS          = 9   # NVIDIA vGPU for Compute
 NVML_BRAND_NVIDIA_VWS          = 10  # NVIDIA RTX Virtual Workstation
 NVML_BRAND_NVIDIA_CLOUD_GAMING = 11  # NVIDIA Cloud Gaming
 NVML_BRAND_NVIDIA_VGAMING      = NVML_BRAND_NVIDIA_CLOUD_GAMING # Deprecated from API reporting. Keeping definition for backward compatibility.
@@ -786,7 +786,7 @@ NVML_FI_DEV_NVLINK_GET_POWER_THRESHOLD_MIN               = 223
 NVML_FI_DEV_NVLINK_GET_POWER_THRESHOLD_UNITS             = 224 # Values are in the form NVML_NVLINK_LOW_POWER_THRESHOLD_UNIT_*
 NVML_FI_DEV_NVLINK_GET_POWER_THRESHOLD_SUPPORTED         = 225
 
-NVML_FI_DEV_RESET_STATUS                                 = 226 # Deprecated use NVML_FI_DEV_GET_GPU_RECOVERY_ACTION instead 
+NVML_FI_DEV_RESET_STATUS                                 = 226 # Deprecated use NVML_FI_DEV_GET_GPU_RECOVERY_ACTION instead
 NVML_FI_DEV_DRAIN_AND_RESET_STATUS                       = 227 # Deprecated use NVML_FI_DEV_GET_GPU_RECOVERY_ACTION instead
 NVML_FI_DEV_PCIE_OUTBOUND_ATOMICS_MASK                   = 228
 NVML_FI_DEV_PCIE_INBOUND_ATOMICS_MASK                    = 229
@@ -853,7 +853,14 @@ NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_SECONDARY_POWER_FLOOR      = 285 # Current 
 NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_PRIMARY_FLOOR_ACT_WIN_MULT = 286 # Current primary floor activation window multiplier value for a given profile
 NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_PRIMARY_FLOOR_TAR_WIN_MULT = 287 # Current primary floor target window multiplier value for a given profile
 NVML_FI_PWR_SMOOTHING_ADMIN_OVERRIDE_PRIMARY_FLOOR_ACT_OFFSET   = 288 # Current primary floor activation offset value in Watts for a given profile
-NVML_FI_MAX = 289 # One greater than the largest field ID defined above
+NVML_FI_DEV_NVLINK_COUNT_RAW_ERRORS_LANE0                       = 289 # NVLINK raw error count for lane 0
+NVML_FI_DEV_NVLINK_COUNT_RAW_ERRORS_LANE1                       = 290 # NVLINK raw error count for lane 1
+NVML_FI_DEV_NVLINK_COUNT_RAW_BER_LANE0_V2                       = 291 # NVLINK raw BER for lane 0
+NVML_FI_DEV_NVLINK_COUNT_RAW_BER_LANE1_V2                       = 292 # NVLINK raw BER for lane 1
+NVML_FI_DEV_NVLINK_COUNT_RAW_BER_V2                             = 293 # NVLINK total raw BER
+NVML_FI_DEV_NVLINK_PLR_XMIT_BLOCKS                              = 294 # NVLINK PLR Xmit Blocks
+NVML_FI_DEV_NVLINK_PLR_XMIT_RETRY_BLOCKS                        = 295 # NVLINK PLR XMIT Retry Blocks
+NVML_FI_MAX = 296 # One greater than the largest field ID defined above
 
 # NVML_FI_DEV_NVLINK_GET_STATE state enums
 NVML_NVLINK_STATE_INACTIVE = 0x0
@@ -974,11 +981,11 @@ NVML_CC_SYSTEM_DEVTOOLS_MODE_ON = 1
 NVML_CC_SYSTEM_MULTIGPU_NONE = 0
 NVML_CC_SYSTEM_MULTIGPU_PROTECTED_PCIE = 1
 NVML_CC_SYSTEM_MULTIGPU_NVLE = 2
- 
+
 NVML_CC_SYSTEM_ENVIRONMENT_UNAVAILABLE = 0
 NVML_CC_SYSTEM_ENVIRONMENT_SIM = 1
 NVML_CC_SYSTEM_ENVIRONMENT_PROD = 2
- 
+
 _nvmlConfComputeCcFeature_t = c_uint
 NVML_CC_SYSTEM_FEATURE_DISABLED = 0
 NVML_CC_SYSTEM_FEATURE_ENABLED = 1
@@ -1915,6 +1922,15 @@ class c_nvmlDeviceAddressingMode_t(_PrintableStructure):
     def __init__(self):
         super(c_nvmlDeviceAddressingMode_t, self).__init__(version=nvmlDeviceAddressingMode_v1)
 
+nvmlUnrepairableMemory_v1 = 0x1000008
+class c_nvmlUnrepairableMemory_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('version', c_uint),
+        ('unrepairableMemory', c_uint),
+    ]
+    def __init__(self):
+        super(c_nvmlUnrepairableMemory_v1_t, self).__init__(version=nvmlUnrepairableMemory_v1)
+
 #PRM Counter IDs
 NVML_PRM_COUNTER_ID_NONE = 0
 # Physical Layer Counters (PPCNT group 0x12)
@@ -1974,17 +1990,6 @@ def nvmlDeviceReadPRMCounters_v1(handle, c_info):
     fn = _nvmlGetFunctionPointer("nvmlDeviceReadPRMCounters_v1")
     ret = fn(handle, byref(c_info))
     _nvmlCheckReturn(ret)
-
-
-
-nvmlUnrepairableMemory_v1 = 0x1000008
-class c_nvmlUnrepairableMemory_v1_t(_PrintableStructure):
-    _fields_ = [
-        ('version', c_uint),
-        ('unrepairableMemory', c_uint),
-    ]
-    def __init__(self):
-        super(c_nvmlUnrepairableMemory_v1_t, self).__init__(version=nvmlUnrepairableMemory_v1)
 
 ## Event structures
 class struct_c_nvmlEventSet_t(Structure):
@@ -2333,11 +2338,14 @@ NVML_SUPPORTED_VGPU_SCHEDULER_POLICY_COUNT  = 3
 
 NVML_SCHEDULER_SW_MAX_LOG_ENTRIES           = 200
 
+# DEPRECATED: Adaptive Round Robin mode is always enabled
 NVML_VGPU_SCHEDULER_ARR_DEFAULT   = 0
 NVML_VGPU_SCHEDULER_ARR_DISABLE   = 1
 NVML_VGPU_SCHEDULER_ARR_ENABLE    = 2
 
 NVML_VGPU_SCHEDULER_ENGINE_TYPE_GRAPHICS    = 1
+NVML_VGPU_SCHEDULER_ENGINE_TYPE_NVENC1      = 2
+NVML_VGPU_SCHEDULER_ENGINE_TYPE_NVENC0      = 3
 
 class c_nvmlVgpuSchedDataWithARR_t(_PrintableStructure):
     _fields_ = [
@@ -2492,6 +2500,43 @@ class c_nvmlVgpuCreatablePlacementInfo_v1_t(_PrintableStructure):
 
 nvmlVgpuCreatablePlacementInfo_v1 = 0x1000020
 
+class c_nvmlVgpuSchedulerStateInfo_v2_t(_PrintableStructure):
+    _fields_ = [
+        ('engineId',        c_uint),                        # input. One of NVML_ENGINE_TYPE*
+        ('schedulerPolicy', c_uint),                        # output
+        ('avgFactor',       c_uint),                        # output
+        ('timeslice',       c_uint),                        # output
+    ]
+
+class c_nvmlVgpuSchedulerLogEntry_v2_t(_PrintableStructure):
+    _fields_ = [
+        ('timestamp',                   c_ulonglong),   # output
+        ('timeRunTotal',                c_ulonglong),   # output
+        ('timeRun',                     c_ulonglong),   # output
+        ('swRunlistId',                 c_uint),        # output
+        ('targetTimeSlice',             c_ulonglong),   # output
+        ('cumulativePreemptionTime',    c_ulonglong),   # output
+        ('weight',                      c_uint),        # output
+    ]
+
+class c_nvmlVgpuSchedulerLogInfo_v2_t(_PrintableStructure):
+    _fields_ = [
+        ('engineId',        c_uint),                                                               # input. One of NVML_ENGINE_TYPE*
+        ('schedulerPolicy', c_uint),                                                               # output
+        ('avgFactor',       c_uint),                                                               # output
+        ('timeslice',       c_uint),                                                               # output
+        ('entriesCount',    c_uint),                                                               # output
+        ('logEntries',      c_nvmlVgpuSchedulerLogEntry_v2_t * NVML_SCHEDULER_SW_MAX_LOG_ENTRIES), # output
+    ]
+
+class c_nvmlVgpuSchedulerState_v2_t(_PrintableStructure):
+    _fields_ = [
+        ('engineId',        c_uint),   # input. One of NVML_ENGINE_TYPE*
+        ('schedulerPolicy', c_uint),   # input
+        ('avgFactor',       c_uint),   # input
+        ('frequency',       c_uint),   # input
+    ]
+
 class c_nvmlFBCStats_t(Structure):
     _fields_ = [("sessionsCount", c_uint),
                 ("averageFPS", c_uint),
@@ -2572,7 +2617,7 @@ class c_nvmlGpuInstanceProfileInfo_v2_t(_PrintableStructure):
                 ("memorySizeMB", c_ulonglong),
                 ("name", c_char * NVML_DEVICE_NAME_V2_BUFFER_SIZE)
                ]
-    
+
     def __init__(self):
         super(c_nvmlGpuInstanceProfileInfo_v2_t, self).__init__(version=nvmlGpuInstanceProfileInfo_v2)
 
@@ -3575,7 +3620,7 @@ nvmlTemperature_v1 = 0x100000C
 def nvmlDeviceGetTemperatureV1(handle, sensor):
     c_temp = c_nvmlTemperature_v1_t()
     c_temp.version = nvmlTemperature_v1
-    c_temp.sensorType = _nvmlTemperatureSensors_t(sensor) 
+    c_temp.sensorType = _nvmlTemperatureSensors_t(sensor)
     fn = _nvmlGetFunctionPointer("nvmlDeviceGetTemperatureV")
     ret = fn(handle, byref(c_temp))
     _nvmlCheckReturn(ret)
@@ -3837,13 +3882,24 @@ def nvmlDeviceGetPcieReplayCounter(handle):
     _nvmlCheckReturn(ret)
     return c_replay.value
 
-def nvmlDeviceGetDriverModel(handle):
+def nvmlDeviceGetDriverModel_v1(handle):
     c_currModel = _nvmlDriverModel_t()
     c_pendingModel = _nvmlDriverModel_t()
     fn = _nvmlGetFunctionPointer("nvmlDeviceGetDriverModel")
     ret = fn(handle, byref(c_currModel), byref(c_pendingModel))
     _nvmlCheckReturn(ret)
     return [c_currModel.value, c_pendingModel.value]
+
+def nvmlDeviceGetDriverModel_v2(handle):
+    c_currModel = _nvmlDriverModel_t()
+    c_pendingModel = _nvmlDriverModel_t()
+    fn = _nvmlGetFunctionPointer("nvmlDeviceGetDriverModel_v2")
+    ret = fn(handle, byref(c_currModel), byref(c_pendingModel))
+    _nvmlCheckReturn(ret)
+    return [c_currModel.value, c_pendingModel.value]
+
+def nvmlDeviceGetDriverModel(handle):
+    return nvmlDeviceGetDriverModel_v2(handle)
 
 # added to API
 def nvmlDeviceGetCurrentDriverModel(handle):
@@ -4797,6 +4853,12 @@ def nvmlDeviceSetVgpuCapabilities(handle, capability, state):
     _nvmlCheckReturn(ret)
     return NVML_SUCCESS
 
+def nvmlDeviceVgpuForceGspUnload(handle):
+    fn = _nvmlGetFunctionPointer("nvmlDeviceVgpuForceGspUnload")
+    ret = fn(handle)
+    _nvmlCheckReturn(ret)
+    return NVML_SUCCESS
+
 def nvmlDeviceGetSupportedVgpus(handle):
     # first call to get the size
     c_vgpu_count = c_uint(0)
@@ -5495,6 +5557,7 @@ def nvmlDeviceGetPgpuMetadataString(handle):
         raise NVMLError(ret)
     return (c_pgpuMetadata.value, c_bufferSize.value)
 
+# DEPRECATED: Use nvmlDeviceGetVgpuSchedulerLog_v2 instead;
 def nvmlDeviceGetVgpuSchedulerLog(handle):
     c_vgpu_sched_log = c_nvmlVgpuSchedulerLog_t()
     fn = _nvmlGetFunctionPointer("nvmlDeviceGetVgpuSchedulerLog")
@@ -5502,6 +5565,7 @@ def nvmlDeviceGetVgpuSchedulerLog(handle):
     _nvmlCheckReturn(ret)
     return c_vgpu_sched_log
 
+# DEPRECATED: Use nvmlDeviceGetVgpuSchedulerState_v2 instead;
 def nvmlDeviceGetVgpuSchedulerState(handle):
     c_vgpu_sched_state = c_nvmlVgpuSchedulerGetState_t()
     fn = _nvmlGetFunctionPointer("nvmlDeviceGetVgpuSchedulerState")
@@ -5516,6 +5580,7 @@ def nvmlDeviceGetVgpuSchedulerCapabilities(handle):
     _nvmlCheckReturn(ret)
     return c_vgpu_sched_caps
 
+# DEPRECATED: Use nvmlDeviceSetVgpuSchedulerState_v2 instead;
 def nvmlDeviceSetVgpuSchedulerState(handle, sched_state):
     fn = _nvmlGetFunctionPointer("nvmlDeviceSetVgpuSchedulerState")
     ret = fn(handle, byref(sched_state))
@@ -5622,18 +5687,21 @@ def nvmlGpuInstanceGetActiveVgpus(gpuInstance, c_vgpu_instance_info):
     else:
         raise NVMLError(ret)
 
+# DEPRECATED: Use nvmlGpuInstanceSetVgpuSchedulerState_v2 instead;
 def nvmlGpuInstanceSetVgpuSchedulerState(gpuInstance, sched_state):
     fn = _nvmlGetFunctionPointer("nvmlGpuInstanceSetVgpuSchedulerState")
     ret = fn(gpuInstance, byref(sched_state))
     _nvmlCheckReturn(ret)
     return ret
 
+# DEPRECATED: Use nvmlGpuInstanceGetVgpuSchedulerState_v2 instead;
 def nvmlGpuInstanceGetVgpuSchedulerState(gpuInstance, c_vgpu_sched_state_info):
     fn = _nvmlGetFunctionPointer("nvmlGpuInstanceGetVgpuSchedulerState")
     ret = fn(gpuInstance, byref(c_vgpu_sched_state_info))
     _nvmlCheckReturn(ret)
     return c_vgpu_sched_state_info
 
+# DEPRECATED: Use nvmlGpuInstanceGetVgpuSchedulerLog_v2 instead;
 def nvmlGpuInstanceGetVgpuSchedulerLog(gpuInstance, c_vgpu_sched_log_info):
     fn = _nvmlGetFunctionPointer("nvmlGpuInstanceGetVgpuSchedulerLog")
     ret = fn(gpuInstance, byref(c_vgpu_sched_log_info))
@@ -5671,6 +5739,42 @@ def nvmlGpuInstanceSetVgpuHeterogeneousMode(gpuInstance, heterogeneous_mode):
     c_vgpuHeterogeneousMode.mode = heterogeneous_mode
     fn = _nvmlGetFunctionPointer("nvmlGpuInstanceSetVgpuHeterogeneousMode")
     ret = fn(gpuInstance, byref(c_vgpuHeterogeneousMode))
+    _nvmlCheckReturn(ret)
+    return NVML_SUCCESS
+
+def nvmlDeviceGetVgpuSchedulerState_v2(handle, c_vgpu_sched_state_info_v2):
+    fn = _nvmlGetFunctionPointer("nvmlDeviceGetVgpuSchedulerState_v2")
+    ret = fn(handle, byref(c_vgpu_sched_state_info_v2))
+    _nvmlCheckReturn(ret)
+    return c_vgpu_sched_state_info_v2
+
+def nvmlGpuInstanceGetVgpuSchedulerState_v2(gpuInstance, c_vgpu_sched_state_info_v2):
+    fn = _nvmlGetFunctionPointer("nvmlGpuInstanceGetVgpuSchedulerState_v2")
+    ret = fn(gpuInstance, byref(c_vgpu_sched_state_info_v2))
+    _nvmlCheckReturn(ret)
+    return c_vgpu_sched_state_info_v2
+
+def nvmlDeviceGetVgpuSchedulerLog_v2(handle, c_vgpu_sched_log_info_v2):
+    fn = _nvmlGetFunctionPointer("nvmlDeviceGetVgpuSchedulerLog_v2")
+    ret = fn(handle, byref(c_vgpu_sched_log_info_v2))
+    _nvmlCheckReturn(ret)
+    return c_vgpu_sched_log_info_v2
+
+def nvmlGpuInstanceGetVgpuSchedulerLog_v2(gpuInstance, c_vgpu_sched_log_info_v2):
+    fn = _nvmlGetFunctionPointer("nvmlGpuInstanceGetVgpuSchedulerLog_v2")
+    ret = fn(gpuInstance, byref(c_vgpu_sched_log_info_v2))
+    _nvmlCheckReturn(ret)
+    return c_vgpu_sched_log_info_v2
+
+def nvmlDeviceSetVgpuSchedulerState_v2(handle, sched_state_v2):
+    fn = _nvmlGetFunctionPointer("nvmlDeviceSetVgpuSchedulerState_v2")
+    ret = fn(handle, byref(sched_state_v2))
+    _nvmlCheckReturn(ret)
+    return NVML_SUCCESS
+
+def nvmlGpuInstanceSetVgpuSchedulerState_v2(gpuInstance, sched_state_v2):
+    fn = _nvmlGetFunctionPointer("nvmlGpuInstanceSetVgpuSchedulerState_v2")
+    ret = fn(gpuInstance, byref(sched_state_v2))
     _nvmlCheckReturn(ret)
     return NVML_SUCCESS
 
@@ -5797,7 +5901,7 @@ def nvmlGpuInstanceGetComputeInstanceProfileInfo(device, profile, engProfile, ve
         c_info = c_nvmlComputeInstanceProfileInfo_t()
         fn = _nvmlGetFunctionPointer("nvmlGpuInstanceGetComputeInstanceProfileInfo")
     else:
-        raise NVMLError(NVML_ERROR_FUNCTION_NOT_FOUND) 
+        raise NVMLError(NVML_ERROR_FUNCTION_NOT_FOUND)
     ret = fn(device, profile, engProfile, byref(c_info))
     _nvmlCheckReturn(ret)
     return c_info
@@ -6237,6 +6341,7 @@ NVML_GPM_METRIC_INTEGER_UTIL                = 4 # Percentage of time the GPU's S
 NVML_GPM_METRIC_ANY_TENSOR_UTIL             = 5 # Percentage of time the GPU's SMs were doing ANY tensor operations. 0.0 - 100.0
 NVML_GPM_METRIC_DFMA_TENSOR_UTIL            = 6 # Percentage of time the GPU's SMs were doing DFMA tensor operations. 0.0 - 100.0
 NVML_GPM_METRIC_HMMA_TENSOR_UTIL            = 7 # Percentage of time the GPU's SMs were doing HMMA tensor operations. 0.0 - 100.0
+NVML_GPM_METRIC_DMMA_TENSOR_UTIL            = 8 # Percentage of time the GPU's SMs were doing DMMA tensor operations. 0.0 - 100.0
 NVML_GPM_METRIC_IMMA_TENSOR_UTIL            = 9 # Percentage of time the GPU's SMs were doing IMMA tensor operations. 0.0 - 100.0
 NVML_GPM_METRIC_DRAM_BW_UTIL                = 10 # Percentage of DRAM bw used vs theoretical maximum. 0.0 - 100.0
 NVML_GPM_METRIC_FP64_UTIL                   = 11 # Percentage of time the GPU's SMs were doing non-tensor FP64 math. 0.0 - 100.0
@@ -6366,51 +6471,100 @@ NVML_GPM_METRIC_PEERMEM_CACHE_HIT           = 162
 NVML_GPM_METRIC_PEERMEM_CACHE_MISS          = 163
 NVML_GPM_METRIC_DRAM_CACHE_HIT              = 164
 NVML_GPM_METRIC_DRAM_CACHE_MISS             = 165
-NVML_GPM_METRIC_NVENC_0_UTIL                = 166,
-NVML_GPM_METRIC_NVENC_1_UTIL                = 167,
-NVML_GPM_METRIC_NVENC_2_UTIL                = 168,
-NVML_GPM_METRIC_NVENC_3_UTIL                = 169,
-NVML_GPM_METRIC_GR0_CTXSW_CYCLES_ELAPSED    = 170,
-NVML_GPM_METRIC_GR0_CTXSW_CYCLES_ACTIVE     = 171,
-NVML_GPM_METRIC_GR0_CTXSW_REQUESTS          = 172,
-NVML_GPM_METRIC_GR0_CTXSW_CYCLES_PER_REQ    = 173,
-NVML_GPM_METRIC_GR0_CTXSW_ACTIVE_PCT        = 174,
-NVML_GPM_METRIC_GR1_CTXSW_CYCLES_ELAPSED    = 175,
-NVML_GPM_METRIC_GR1_CTXSW_CYCLES_ACTIVE     = 176,
-NVML_GPM_METRIC_GR1_CTXSW_REQUESTS          = 177,
-NVML_GPM_METRIC_GR1_CTXSW_CYCLES_PER_REQ    = 178,
-NVML_GPM_METRIC_GR1_CTXSW_ACTIVE_PCT        = 179,
-NVML_GPM_METRIC_GR2_CTXSW_CYCLES_ELAPSED    = 180,
-NVML_GPM_METRIC_GR2_CTXSW_CYCLES_ACTIVE     = 181,
-NVML_GPM_METRIC_GR2_CTXSW_REQUESTS          = 182,
-NVML_GPM_METRIC_GR2_CTXSW_CYCLES_PER_REQ    = 183,
-NVML_GPM_METRIC_GR2_CTXSW_ACTIVE_PCT        = 184,
-NVML_GPM_METRIC_GR3_CTXSW_CYCLES_ELAPSED    = 185,
-NVML_GPM_METRIC_GR3_CTXSW_CYCLES_ACTIVE     = 186,
-NVML_GPM_METRIC_GR3_CTXSW_REQUESTS          = 187,
-NVML_GPM_METRIC_GR3_CTXSW_CYCLES_PER_REQ    = 188,
-NVML_GPM_METRIC_GR3_CTXSW_ACTIVE_PCT        = 189,
-NVML_GPM_METRIC_GR4_CTXSW_CYCLES_ELAPSED    = 190,
-NVML_GPM_METRIC_GR4_CTXSW_CYCLES_ACTIVE     = 191,
-NVML_GPM_METRIC_GR4_CTXSW_REQUESTS          = 192,
-NVML_GPM_METRIC_GR4_CTXSW_CYCLES_PER_REQ    = 193,
-NVML_GPM_METRIC_GR4_CTXSW_ACTIVE_PCT        = 194,
-NVML_GPM_METRIC_GR5_CTXSW_CYCLES_ELAPSED    = 195,
-NVML_GPM_METRIC_GR5_CTXSW_CYCLES_ACTIVE     = 196,
-NVML_GPM_METRIC_GR5_CTXSW_REQUESTS          = 197,
-NVML_GPM_METRIC_GR5_CTXSW_CYCLES_PER_REQ    = 198,
-NVML_GPM_METRIC_GR5_CTXSW_ACTIVE_PCT        = 199,
-NVML_GPM_METRIC_GR6_CTXSW_CYCLES_ELAPSED    = 200,
-NVML_GPM_METRIC_GR6_CTXSW_CYCLES_ACTIVE     = 201,
-NVML_GPM_METRIC_GR6_CTXSW_REQUESTS          = 202,
-NVML_GPM_METRIC_GR6_CTXSW_CYCLES_PER_REQ    = 203,
-NVML_GPM_METRIC_GR6_CTXSW_ACTIVE_PCT        = 204,
-NVML_GPM_METRIC_GR7_CTXSW_CYCLES_ELAPSED    = 205,
-NVML_GPM_METRIC_GR7_CTXSW_CYCLES_ACTIVE     = 206,
-NVML_GPM_METRIC_GR7_CTXSW_REQUESTS          = 207,
-NVML_GPM_METRIC_GR7_CTXSW_CYCLES_PER_REQ    = 208,
-NVML_GPM_METRIC_GR7_CTXSW_ACTIVE_PCT        = 209,
-NVML_GPM_METRIC_MAX                         = 210
+NVML_GPM_METRIC_NVENC_0_UTIL                = 166
+NVML_GPM_METRIC_NVENC_1_UTIL                = 167
+NVML_GPM_METRIC_NVENC_2_UTIL                = 168
+NVML_GPM_METRIC_NVENC_3_UTIL                = 169
+NVML_GPM_METRIC_GR0_CTXSW_CYCLES_ELAPSED    = 170
+NVML_GPM_METRIC_GR0_CTXSW_CYCLES_ACTIVE     = 171
+NVML_GPM_METRIC_GR0_CTXSW_REQUESTS          = 172
+NVML_GPM_METRIC_GR0_CTXSW_CYCLES_PER_REQ    = 173
+NVML_GPM_METRIC_GR0_CTXSW_ACTIVE_PCT        = 174
+NVML_GPM_METRIC_GR1_CTXSW_CYCLES_ELAPSED    = 175
+NVML_GPM_METRIC_GR1_CTXSW_CYCLES_ACTIVE     = 176
+NVML_GPM_METRIC_GR1_CTXSW_REQUESTS          = 177
+NVML_GPM_METRIC_GR1_CTXSW_CYCLES_PER_REQ    = 178
+NVML_GPM_METRIC_GR1_CTXSW_ACTIVE_PCT        = 179
+NVML_GPM_METRIC_GR2_CTXSW_CYCLES_ELAPSED    = 180
+NVML_GPM_METRIC_GR2_CTXSW_CYCLES_ACTIVE     = 181
+NVML_GPM_METRIC_GR2_CTXSW_REQUESTS          = 182
+NVML_GPM_METRIC_GR2_CTXSW_CYCLES_PER_REQ    = 183
+NVML_GPM_METRIC_GR2_CTXSW_ACTIVE_PCT        = 184
+NVML_GPM_METRIC_GR3_CTXSW_CYCLES_ELAPSED    = 185
+NVML_GPM_METRIC_GR3_CTXSW_CYCLES_ACTIVE     = 186
+NVML_GPM_METRIC_GR3_CTXSW_REQUESTS          = 187
+NVML_GPM_METRIC_GR3_CTXSW_CYCLES_PER_REQ    = 188
+NVML_GPM_METRIC_GR3_CTXSW_ACTIVE_PCT        = 189
+NVML_GPM_METRIC_GR4_CTXSW_CYCLES_ELAPSED    = 190
+NVML_GPM_METRIC_GR4_CTXSW_CYCLES_ACTIVE     = 191
+NVML_GPM_METRIC_GR4_CTXSW_REQUESTS          = 192
+NVML_GPM_METRIC_GR4_CTXSW_CYCLES_PER_REQ    = 193
+NVML_GPM_METRIC_GR4_CTXSW_ACTIVE_PCT        = 194
+NVML_GPM_METRIC_GR5_CTXSW_CYCLES_ELAPSED    = 195
+NVML_GPM_METRIC_GR5_CTXSW_CYCLES_ACTIVE     = 196
+NVML_GPM_METRIC_GR5_CTXSW_REQUESTS          = 197
+NVML_GPM_METRIC_GR5_CTXSW_CYCLES_PER_REQ    = 198
+NVML_GPM_METRIC_GR5_CTXSW_ACTIVE_PCT        = 199
+NVML_GPM_METRIC_GR6_CTXSW_CYCLES_ELAPSED    = 200
+NVML_GPM_METRIC_GR6_CTXSW_CYCLES_ACTIVE     = 201
+NVML_GPM_METRIC_GR6_CTXSW_REQUESTS          = 202
+NVML_GPM_METRIC_GR6_CTXSW_CYCLES_PER_REQ    = 203
+NVML_GPM_METRIC_GR6_CTXSW_ACTIVE_PCT        = 204
+NVML_GPM_METRIC_GR7_CTXSW_CYCLES_ELAPSED    = 205
+NVML_GPM_METRIC_GR7_CTXSW_CYCLES_ACTIVE     = 206
+NVML_GPM_METRIC_GR7_CTXSW_REQUESTS          = 207
+NVML_GPM_METRIC_GR7_CTXSW_CYCLES_PER_REQ    = 208
+NVML_GPM_METRIC_GR7_CTXSW_ACTIVE_PCT        = 209
+NVML_GPM_METRIC_SM_CYCLES_ELAPSED           = 248 # The GPU's SM cycles elapsed since reboot
+NVML_GPM_METRIC_SM_CYCLES_ACTIVE            = 249 # The GPU's SM activity since reboot
+NVML_GPM_METRIC_MMA_CYCLES_ACTIVE           = 250 # The GPU's SM MMA tensor activity since reboot
+NVML_GPM_METRIC_DMMA_CYCLES_ACTIVE          = 251 # The GPU's SM DMMA tensor activity since reboot
+NVML_GPM_METRIC_HMMA_CYCLES_ACTIVE          = 252 # The GPU's SM HMMA tensor activity since reboot
+NVML_GPM_METRIC_IMMA_CYCLES_ACTIVE          = 253 # The GPU's SM IMMA tensor activity since reboot
+NVML_GPM_METRIC_DFMA_CYCLES_ACTIVE          = 254 # The GPU's SM DFMA tensor activity since reboot
+NVML_GPM_METRIC_PCIE_TX                     = 255 # The PCIe TX traffic since reboot
+NVML_GPM_METRIC_PCIE_RX                     = 256 # The PCIe RX traffic since reboot
+NVML_GPM_METRIC_INTEGER_CYCLES_ACTIVE       = 257 # The GPU's SM integer activity since reboot
+NVML_GPM_METRIC_FP64_CYCLES_ACTIVE          = 258 # The GPU's SM FP64 activity since reboot
+NVML_GPM_METRIC_FP32_CYCLES_ACTIVE          = 259 # The GPU's SM FP64 activity since reboot
+NVML_GPM_METRIC_FP16_CYCLES_ACTIVE          = 260 # The GPU's SM FP64 activity since reboot
+NVML_GPM_METRIC_NVLINK_L0_RX                = 261 # NvLink read for link 0 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L0_TX                = 262 # NvLink write for link 0 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L1_RX                = 263 # NvLink read for link 1 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L1_TX                = 264 # NvLink write for link 1 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L2_RX                = 265 # NvLink read for link 2 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L2_TX                = 266 # NvLink write for link 2 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L3_RX                = 267 # NvLink read for link 3 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L3_TX                = 268 # NvLink write for link 3 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L4_RX                = 269 # NvLink read for link 4 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L4_TX                = 270 # NvLink write for link 4 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L5_RX                = 271 # NvLink read for link 5 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L5_TX                = 272 # NvLink write for link 5 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L6_RX                = 273 # NvLink read for link 6 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L6_TX                = 274 # NvLink write for link 6 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L7_RX                = 275 # NvLink read for link 7 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L7_TX                = 276 # NvLink write for link 7 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L8_RX                = 277 # NvLink read for link 8 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L8_TX                = 278 # NvLink write for link 8 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L9_RX                = 279 # NvLink read for link 9 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L9_TX                = 280 # NvLink write for link 9 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L10_RX               = 281 # NvLink read for link 10 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L10_TX               = 282 # NvLink write for link 10 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L11_RX               = 283 # NvLink read for link 11 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L11_TX               = 284 # NvLink write for link 11 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L12_RX               = 285 # NvLink read for link 12 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L12_TX               = 286 # NvLink write for link 12 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L13_RX               = 287 # NvLink read for link 13 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L13_TX               = 288 # NvLink write for link 13 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L14_RX               = 289 # NvLink read for link 14 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L14_TX               = 290 # NvLink write for link 14 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L15_RX               = 291 # NvLink read for link 15 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L15_TX               = 292 # NvLink write for link 15 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L16_RX               = 293 # NvLink read for link 16 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L16_TX               = 294 # NvLink write for link 16 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L17_RX               = 295 # NvLink read for link 17 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L17_TX               = 296 # NvLink write for link 17 in bytes since reboot
+NVML_GPM_METRIC_MAX                         = 333 # Maximum value above +1
 
 ## Structs
 
@@ -6587,8 +6741,17 @@ NVML_GPU_FABRIC_HEALTH_MASK_INCORRECT_CONFIGURATION_INSUFFICIENT_NVLINKS = 5
 NVML_GPU_FABRIC_HEALTH_MASK_INCORRECT_CONFIGURATION_INCOMPATIBLE_GPU_FW  = 6
 NVML_GPU_FABRIC_HEALTH_MASK_INCORRECT_CONFIURATION_INVALID_LOCATION      = 7
 NVML_GPU_FABRIC_HEALTH_MASK_INCORRECT_CONFIGURATION_INVALID_LOCATION     = NVML_GPU_FABRIC_HEALTH_MASK_INCORRECT_CONFIURATION_INVALID_LOCATION
+NVML_GPU_FABRIC_HEALTH_MASK_INCORRECT_CONFIGURATION_GPU_STATE_INVALID    = 8
+
 NVML_GPU_FABRIC_HEALTH_MASK_SHIFT_INCORRECT_CONFIGURATION                = 8
 NVML_GPU_FABRIC_HEALTH_MASK_WIDTH_INCORRECT_CONFIGURATION                = 0xf
+
+NVML_GPU_FABRIC_HEALTH_MASK_PARTITION_ASSIGNED_NOT_SUPPORTED = 0
+NVML_GPU_FABRIC_HEALTH_MASK_PARTITION_ASSIGNED_TRUE          = 1
+NVML_GPU_FABRIC_HEALTH_MASK_PARTITION_ASSIGNED_FALSE         = 2
+
+NVML_GPU_FABRIC_HEALTH_MASK_SHIFT_PARTITION_ASSIGNED = 12
+NVML_GPU_FABRIC_HEALTH_MASK_WIDTH_PARTITION_ASSIGNED = 0x3
 
 NVML_GPU_FABRIC_HEALTH_SUMMARY_NOT_SUPPORTED    = 0
 NVML_GPU_FABRIC_HEALTH_SUMMARY_HEALTHY          = 1
@@ -7021,7 +7184,7 @@ def nvmlDeviceGetSramUniqueUncorrectedEccErrorCounts(device, counts):
     return NVML_SUCCESS
 
 def nvmlDeviceGetPdi(device):
-    c_pdi = c_nvmlPdi_t()   
+    c_pdi = c_nvmlPdi_t()
     fn = _nvmlGetFunctionPointer("nvmlDeviceGetPdi")
     ret = fn(device, byref(c_pdi))
     _nvmlCheckReturn(ret)
@@ -7091,3 +7254,4 @@ def nvmlDeviceSetRusdSettings_v1(device, settings):
     fn = _nvmlGetFunctionPointer("nvmlDeviceSetRusdSettings_v1")
     ret = fn(device, byref(settings))
     _nvmlCheckReturn(ret)
+
