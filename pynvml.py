@@ -99,7 +99,7 @@ NVML_MEMORY_LOCATION_CBU = 6
 NVML_MEMORY_LOCATION_SRAM = 7
 NVML_MEMORY_LOCATION_COUNT = 8
 
-NVML_NVLINK_MAX_LINKS = 18
+NVML_NVLINK_MAX_LINKS = 36
 
 # For backwards compatibility, maintain the incorrectly-named "LANES" define
 NVML_NVLINK_MAX_LANES = NVML_NVLINK_MAX_LINKS
@@ -300,6 +300,7 @@ NVML_NVLINK_VERSION_3_0 = 4
 NVML_NVLINK_VERSION_3_1 = 5
 NVML_NVLINK_VERSION_4_0 = 6
 NVML_NVLINK_VERSION_5_0 = 7
+NVML_NVLINK_VERSION_6_0 = 8
 
 _nvmlPerfPolicyType_t = c_uint
 NVML_PERF_POLICY_POWER = 0
@@ -393,6 +394,7 @@ NVML_DEVICE_ARCH_AMPERE   = 7
 NVML_DEVICE_ARCH_ADA      = 8
 NVML_DEVICE_ARCH_HOPPER   = 9
 NVML_DEVICE_ARCH_BLACKWELL   = 10
+NVML_DEVICE_ARCH_RUBIN      = 13
 NVML_DEVICE_ARCH_UNKNOWN  = 0xffffffff
 
 # PCI bus Types
@@ -446,6 +448,7 @@ NVML_GPU_RECOVERY_ACTION_GPU_RESET   = 1
 NVML_GPU_RECOVERY_ACTION_NODE_REBOOT = 2
 NVML_GPU_RECOVERY_ACTION_DRAIN_P2P   = 3
 NVML_GPU_RECOVERY_ACTION_DRAIN_AND_RESET = 4
+NVML_GPU_RECOVERY_ACTION_RECOVER_IMEX_DOMAIN = 5
 
 # C preprocessor defined values
 nvmlFlagDefault             = 0
@@ -860,7 +863,19 @@ NVML_FI_DEV_NVLINK_COUNT_RAW_BER_LANE1_V2                       = 292 # NVLINK r
 NVML_FI_DEV_NVLINK_COUNT_RAW_BER_V2                             = 293 # NVLINK total raw BER
 NVML_FI_DEV_NVLINK_PLR_XMIT_BLOCKS                              = 294 # NVLINK PLR Xmit Blocks
 NVML_FI_DEV_NVLINK_PLR_XMIT_RETRY_BLOCKS                        = 295 # NVLINK PLR XMIT Retry Blocks
-NVML_FI_MAX = 296 # One greater than the largest field ID defined above
+NVML_FI_DEV_NVLINK_GET_DATA_RATE                                = 296 # The Effective Nvlink Data rate available for transactions after accounting for FEC overhead
+NVML_FI_DEV_MMA_STALL_PERCENT                                   = 297 # MMA stall percentage
+NVML_FI_DEV_MCLK_SWITCH_TYPE                                    = 298 # See NVML_MCLK_SWITCH_TYPE_<XYZ> for all enumerations
+NVML_FI_DEV_MCLK_MIN_SWITCH_INTERVAL_MILLISECONDS               = 299 # minimum required elapsed time between runtime mclk switches, 0 = no rate limit
+NVML_FI_PWR_SMOOTHING_SOC_POWER_SMOOTHING_ENABLED               = 300 # State-Of-Charge Power Smoothing Enabled (0/DISABLED or 1/ENABLED)
+NVML_FI_DEV_REMAPPED_ROWS_COR_INACTIVE                          = 301
+NVML_FI_DEV_REMAPPED_ROWS_UNC_INACTIVE                          = 302
+NVML_FI_MAX                                                     = 303 # One greater than the largest field ID defined above
+
+# NVML_FI_DEV_MCLK_SWITCH_TYPE enumerations
+NVML_MCLK_SWITCH_TYPE_NOT_SUPPORTED = 0x0 # switching is not supported
+NVML_MCLK_SWITCH_TYPE_DEFERRED      = 0x1 # deferred switching (driver reload)
+NVML_MCLK_SWITCH_TYPE_RUNTIME       = 0x2 # runtime switching
 
 # NVML_FI_DEV_NVLINK_GET_STATE state enums
 NVML_NVLINK_STATE_INACTIVE = 0x0
@@ -1327,6 +1342,23 @@ class c_nvmlExcludedDeviceInfo_t(_PrintableStructure):
         ('uuid', c_char * NVML_DEVICE_UUID_BUFFER_SIZE)
     ]
 
+NVML_CPER_ACCESS_TYPE_GPU = 1
+NVML_CPER_CURSOR_HANDLE_INIT = 0
+
+class c_nvmlCPERCursor_v1_t(_PrintableStructure):
+    _fields_ = [
+        ("cperTypeMask", c_uint),
+        ("uuid", c_char * NVML_DEVICE_UUID_BUFFER_SIZE),
+        ("handle", c_ulonglong),
+    ]
+
+class c_nvmlGetCPER_v1_t(_PrintableStructure):
+    _fields_ = [
+        ("cursor", c_nvmlCPERCursor_v1_t),
+        ("buffer", POINTER(c_ubyte)),
+        ("bufferSize", c_uint),
+    ]
+
 class nvmlNvLinkUtilizationControl_t(_PrintableStructure):
     _fields_ = [
         ('units', _nvmlNvLinkUtilizationCountUnits_t),
@@ -1402,6 +1434,8 @@ _nvmlProcessMode_t = c_uint
 NVML_PROCESS_MODE_COMPUTE  = 0
 NVML_PROCESS_MODE_GRAPHICS = 1
 NVML_PROCESS_MODE_MPS      = 2
+NVML_PROCESS_MODE_ALL      = 3
+NVML_PROCESS_MODE_MAX      = 4
 
 class c_nvmlProcessDetail_v1_t(Structure):
     _fields_ = [
@@ -1991,6 +2025,19 @@ def nvmlDeviceReadPRMCounters_v1(handle, c_info):
     ret = fn(handle, byref(c_info))
     _nvmlCheckReturn(ret)
 
+class c_nvmlBBXTimeData_v1_t(_PrintableStructure):
+    _fields_ = [
+        ('timeRun', c_uint),
+    ]
+    _fmt_ = {'timeRun': "%d seconds"}
+
+def nvmlDeviceGetBBXTimeData_v1(handle):
+    c_timeData = c_nvmlBBXTimeData_v1_t()
+    fn = _nvmlGetFunctionPointer("nvmlDeviceGetBBXTimeData_v1")
+    ret = fn(handle, byref(c_timeData))
+    _nvmlCheckReturn(ret)
+    return c_timeData
+
 ## Event structures
 class struct_c_nvmlEventSet_t(Structure):
     pass # opaque handle
@@ -2293,6 +2340,20 @@ class c_nvmlAccountingStats_t(_PrintableStructure):
         ('reserved', c_uint * 5)
     ]
 
+class c_nvmlAccountingStats_v2_t(_PrintableStructure):
+    _fields_ = [
+        ('pid', c_uint),
+        ('isRunning', c_uint),
+        ('gpuUtilization', c_uint),
+        ('memoryUtilization', c_uint),
+        ('maxMemoryUsage', c_ulonglong),
+        ('sampleCount', c_uint),
+        ('sumGpuUtil', c_ulonglong),
+        ('sumFbUtil', c_ulonglong),
+        ('time', c_ulonglong),
+        ('startTime', c_ulonglong)
+    ]
+
 class c_nvmlVgpuVersion_t(Structure):
     _fields_ = [("minVersion", c_uint),
                 ("maxVersion", c_uint)
@@ -2579,7 +2640,9 @@ NVML_GPU_INSTANCE_PROFILE_1_SLICE_NO_ME  = 0xD
 NVML_GPU_INSTANCE_PROFILE_2_SLICE_NO_ME  = 0xE
 NVML_GPU_INSTANCE_PROFILE_1_SLICE_ALL_ME = 0xF
 NVML_GPU_INSTANCE_PROFILE_2_SLICE_ALL_ME = 0x10
-NVML_GPU_INSTANCE_PROFILE_COUNT          = 0x11
+
+NVML_GPU_INSTANCE_PROFILE_3_SLICE_GFX      = 0x11
+NVML_GPU_INSTANCE_PROFILE_COUNT            = 0x12
 
 class c_nvmlGpuInstancePlacement_t(Structure):
     _fields_ = [("start", c_uint),
@@ -2640,7 +2703,8 @@ NVML_COMPUTE_INSTANCE_PROFILE_7_SLICE      = 0x4
 NVML_COMPUTE_INSTANCE_PROFILE_8_SLICE      = 0x5
 NVML_COMPUTE_INSTANCE_PROFILE_6_SLICE      = 0x6
 NVML_COMPUTE_INSTANCE_PROFILE_1_SLICE_REV1 = 0x7
-NVML_COMPUTE_INSTANCE_PROFILE_COUNT        = 0x8
+NVML_COMPUTE_INSTANCE_PROFILE_7_SLICE_NVL  = 0x8
+NVML_COMPUTE_INSTANCE_PROFILE_COUNT        = 0x9
 
 NVML_COMPUTE_INSTANCE_ENGINE_PROFILE_SHARED = 0x0
 NVML_COMPUTE_INSTANCE_ENGINE_PROFILE_COUNT = 0x1
@@ -3056,6 +3120,11 @@ def nvmlSystemGetDriverBranch():
     ret = fn(byref(c_branchInfo), c_uint(NVML_SYSTEM_DRIVER_VERSION_BUFFER_SIZE))
     _nvmlCheckReturn(ret)
     return c_branchInfo
+
+def nvmlSystemGetCPER_v1(cper):
+    fn = _nvmlGetFunctionPointer("nvmlSystemGetCPER_v1")
+    ret = fn(byref(cper))
+    _nvmlCheckReturn(ret)
 
 ## Unit get functions
 def nvmlUnitGetCount():
@@ -4441,6 +4510,14 @@ def nvmlDeviceGetAccountingStats(handle, pid):
     if (stats.maxMemoryUsage == NVML_VALUE_NOT_AVAILABLE_ulonglong.value):
         # special case for WDDM on Windows, see comment above
         stats.maxMemoryUsage = None
+    return stats
+
+def nvmlDeviceGetAccountingStats_v2(handle, pid):
+    stats = c_nvmlAccountingStats_v2_t()
+    stats.pid = c_uint(pid)
+    fn = _nvmlGetFunctionPointer("nvmlDeviceGetAccountingStats_v2")
+    ret = fn(handle, byref(stats))
+    _nvmlCheckReturn(ret)
     return stats
 
 def nvmlDeviceGetAccountingPids(handle):
@@ -6515,6 +6592,42 @@ NVML_GPM_METRIC_GR7_CTXSW_CYCLES_ACTIVE     = 206
 NVML_GPM_METRIC_GR7_CTXSW_REQUESTS          = 207
 NVML_GPM_METRIC_GR7_CTXSW_CYCLES_PER_REQ    = 208
 NVML_GPM_METRIC_GR7_CTXSW_ACTIVE_PCT        = 209
+NVML_GPM_METRIC_NVLINK_L18_RX_PER_SEC       = 212
+NVML_GPM_METRIC_NVLINK_L18_TX_PER_SEC       = 213
+NVML_GPM_METRIC_NVLINK_L19_RX_PER_SEC       = 214
+NVML_GPM_METRIC_NVLINK_L19_TX_PER_SEC       = 215
+NVML_GPM_METRIC_NVLINK_L20_RX_PER_SEC       = 216
+NVML_GPM_METRIC_NVLINK_L20_TX_PER_SEC       = 217
+NVML_GPM_METRIC_NVLINK_L21_RX_PER_SEC       = 218
+NVML_GPM_METRIC_NVLINK_L21_TX_PER_SEC       = 219
+NVML_GPM_METRIC_NVLINK_L22_RX_PER_SEC       = 220
+NVML_GPM_METRIC_NVLINK_L22_TX_PER_SEC       = 221
+NVML_GPM_METRIC_NVLINK_L23_RX_PER_SEC       = 222
+NVML_GPM_METRIC_NVLINK_L23_TX_PER_SEC       = 223
+NVML_GPM_METRIC_NVLINK_L24_RX_PER_SEC       = 224
+NVML_GPM_METRIC_NVLINK_L24_TX_PER_SEC       = 225
+NVML_GPM_METRIC_NVLINK_L25_RX_PER_SEC       = 226
+NVML_GPM_METRIC_NVLINK_L25_TX_PER_SEC       = 227
+NVML_GPM_METRIC_NVLINK_L26_RX_PER_SEC       = 228
+NVML_GPM_METRIC_NVLINK_L26_TX_PER_SEC       = 229
+NVML_GPM_METRIC_NVLINK_L27_RX_PER_SEC       = 230
+NVML_GPM_METRIC_NVLINK_L27_TX_PER_SEC       = 231
+NVML_GPM_METRIC_NVLINK_L28_RX_PER_SEC       = 232
+NVML_GPM_METRIC_NVLINK_L28_TX_PER_SEC       = 233
+NVML_GPM_METRIC_NVLINK_L29_RX_PER_SEC       = 234
+NVML_GPM_METRIC_NVLINK_L29_TX_PER_SEC       = 235
+NVML_GPM_METRIC_NVLINK_L30_RX_PER_SEC       = 236
+NVML_GPM_METRIC_NVLINK_L30_TX_PER_SEC       = 237
+NVML_GPM_METRIC_NVLINK_L31_RX_PER_SEC       = 238
+NVML_GPM_METRIC_NVLINK_L31_TX_PER_SEC       = 239
+NVML_GPM_METRIC_NVLINK_L32_RX_PER_SEC       = 240
+NVML_GPM_METRIC_NVLINK_L32_TX_PER_SEC       = 241
+NVML_GPM_METRIC_NVLINK_L33_RX_PER_SEC       = 242
+NVML_GPM_METRIC_NVLINK_L33_TX_PER_SEC       = 243
+NVML_GPM_METRIC_NVLINK_L34_RX_PER_SEC       = 244
+NVML_GPM_METRIC_NVLINK_L34_TX_PER_SEC       = 245
+NVML_GPM_METRIC_NVLINK_L35_RX_PER_SEC       = 246
+NVML_GPM_METRIC_NVLINK_L35_TX_PER_SEC       = 247
 NVML_GPM_METRIC_SM_CYCLES_ELAPSED           = 248 # The GPU's SM cycles elapsed since reboot
 NVML_GPM_METRIC_SM_CYCLES_ACTIVE            = 249 # The GPU's SM activity since reboot
 NVML_GPM_METRIC_MMA_CYCLES_ACTIVE           = 250 # The GPU's SM MMA tensor activity since reboot
@@ -6564,6 +6677,42 @@ NVML_GPM_METRIC_NVLINK_L16_RX               = 293 # NvLink read for link 16 in b
 NVML_GPM_METRIC_NVLINK_L16_TX               = 294 # NvLink write for link 16 in bytes since reboot
 NVML_GPM_METRIC_NVLINK_L17_RX               = 295 # NvLink read for link 17 in bytes since reboot
 NVML_GPM_METRIC_NVLINK_L17_TX               = 296 # NvLink write for link 17 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L18_RX               = 297 # NvLink read for link 18 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L18_TX               = 298 # NvLink write for link 18 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L19_RX               = 299 # NvLink read for link 19 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L19_TX               = 300 # NvLink write for link 19 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L20_RX               = 301 # NvLink read for link 20 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L20_TX               = 302 # NvLink write for link 20 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L21_RX               = 303 # NvLink read for link 21 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L21_TX               = 304 # NvLink write for link 21 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L22_RX               = 305 # NvLink read for link 22 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L22_TX               = 306 # NvLink write for link 22 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L23_RX               = 307 # NvLink read for link 23 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L23_TX               = 308 # NvLink write for link 23 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L24_RX               = 309 # NvLink read for link 24 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L24_TX               = 310 # NvLink write for link 24 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L25_RX               = 311 # NvLink read for link 25 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L25_TX               = 312 # NvLink write for link 25 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L26_RX               = 313 # NvLink read for link 26 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L26_TX               = 314 # NvLink write for link 26 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L27_RX               = 315 # NvLink read for link 27 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L27_TX               = 316 # NvLink write for link 27 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L28_RX               = 317 # NvLink read for link 28 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L28_TX               = 318 # NvLink write for link 28 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L29_RX               = 319 # NvLink read for link 29 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L29_TX               = 320 # NvLink write for link 29 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L30_RX               = 321 # NvLink read for link 30 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L30_TX               = 322 # NvLink write for link 30 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L31_RX               = 323 # NvLink read for link 31 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L31_TX               = 324 # NvLink write for link 31 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L32_RX               = 325 # NvLink read for link 32 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L32_TX               = 326 # NvLink write for link 32 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L33_RX               = 327 # NvLink read for link 33 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L33_TX               = 328 # NvLink write for link 33 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L34_RX               = 329 # NvLink read for link 34 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L34_TX               = 330 # NvLink write for link 34 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L35_RX               = 331 # NvLink read for link 35 in bytes since reboot
+NVML_GPM_METRIC_NVLINK_L35_TX               = 332 # NvLink write for link 35 in bytes since reboot
 NVML_GPM_METRIC_MAX                         = 333 # Maximum value above +1
 
 ## Structs
@@ -6831,6 +6980,8 @@ _nvmlPowerScopeType_t = c_uint
 NVML_POWER_SCOPE_GPU     = 0
 NVML_POWER_SCOPE_MODULE  = 1
 NVML_POWER_SCOPE_MEMORY  = 2
+NVML_POWER_SCOPE_GPU_BASE = 3
+NVML_POWER_SCOPE_COUNT    = 4
 
 class c_nvmlPowerValue_v2_t(_PrintableStructure):
     _fields_ = [
@@ -7114,7 +7265,7 @@ NVML_POWER_SMOOTHING_PROFILE_PARAM_RAMP_UP_RATE         = 1
 NVML_POWER_SMOOTHING_PROFILE_PARAM_RAMP_DOWN_RATE       = 2
 NVML_POWER_SMOOTHING_PROFILE_PARAM_RAMP_DOWN_HYSTERESIS = 3
 NVML_POWER_SMOOTHING_PROFILE_PARAM_SECONDARY_POWER_FLOOR      = 4
-NVML_POWER_SMOOTHING_PROFILE_PARAM_PRIMARY_FLOOR_ACT_WIN_MULT = 5 
+NVML_POWER_SMOOTHING_PROFILE_PARAM_PRIMARY_FLOOR_ACT_WIN_MULT = 5
 NVML_POWER_SMOOTHING_PROFILE_PARAM_PRIMARY_FLOOR_TAR_WIN_MULT = 6
 NVML_POWER_SMOOTHING_PROFILE_PARAM_PRIMARY_FLOOR_ACT_OFFSET   = 7
 
@@ -7255,3 +7406,18 @@ def nvmlDeviceSetRusdSettings_v1(device, settings):
     ret = fn(device, byref(settings))
     _nvmlCheckReturn(ret)
 
+class c_nvmlRemappedRowsInfo_v2_t(_PrintableStructure):
+    _fields_ = [
+        ('corrActiveRemaps', c_uint),
+        ('corrInactiveRemaps', c_uint),
+        ('uncActiveRemaps', c_uint),
+        ('uncInactiveRemaps', c_uint),
+        ('bPending', c_uint),
+        ('bfailureOccurred', c_uint),
+    ]
+
+def nvmlDeviceGetRemappedRows_v2(device, info):
+    fn = _nvmlGetFunctionPointer("nvmlDeviceGetRemappedRows_v2")
+    ret = fn(device, info)
+    _nvmlCheckReturn(ret)
+    return ret
