@@ -1,4 +1,49 @@
-from distutils.core import setup
+try:
+    from setuptools import setup
+except ImportError:
+    try:
+        from distutils.core import setup
+    except ImportError:
+        import os
+        import shutil
+        import sys
+        import sysconfig
+
+        def _site_packages_dir():
+            def normalize(path):
+                if not path:
+                    return None
+                if not os.path.isabs(path):
+                    path = os.path.join(sys.prefix, path)
+                return os.path.normpath(path)
+
+            for key in ('purelib', 'platlib'):
+                candidate = normalize(sysconfig.get_paths().get(key))
+                if candidate:
+                    try:
+                        os.makedirs(candidate, exist_ok=True)
+                        return candidate
+                    except OSError:
+                        pass
+
+            ver = '%d.%d' % sys.version_info[:2]
+            fallback = os.path.normpath(
+                os.path.join(sys.prefix, 'lib', 'python' + ver, 'site-packages'))
+            os.makedirs(fallback, exist_ok=True)
+            return fallback
+
+        def setup(**kwargs):
+            if len(sys.argv) > 1 and sys.argv[1] == "install":
+                dst_dir = _site_packages_dir()
+                src_dir = os.path.dirname(os.path.abspath(__file__))
+                for mod in kwargs.get("py_modules", []):
+                    shutil.copy2(
+                        os.path.join(src_dir, mod + ".py"),
+                        os.path.join(dst_dir, mod + ".py"))
+            else:
+                sys.stderr.write("Usage: {0} install\n".format(sys.argv[0]))
+                sys.exit(1)
+
 from sys import version
 from sys import exit
 
@@ -42,7 +87,7 @@ finally:
 
 
 setup(name=_package_name,
-      version='13.610.43',
+      version='13.615.71',
       description='Python Bindings for the NVIDIA Management Library',
       long_description=long_description,
       long_description_content_type='text/markdown',

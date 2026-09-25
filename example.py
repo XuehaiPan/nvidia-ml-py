@@ -97,6 +97,7 @@ def deviceQuery():
                           NVML_BRAND_NVIDIA_VCS          :  "NVIDIA vGPU for Compute",
                           NVML_BRAND_NVIDIA_VWS          :  "NVIDIA RTX Virtual Workstation",
                           NVML_BRAND_NVIDIA_CLOUD_GAMING :  "NVIDIA Cloud Gaming",
+                          NVML_BRAND_NVIDIA_VGAMEDEV     :  "NVIDIA RTX Virtual Game Dev",
                           NVML_BRAND_QUADRO_RTX          :  "Quadro RTX",
                           NVML_BRAND_NVIDIA_RTX          :  "NVIDIA RTX",
                           NVML_BRAND_NVIDIA              :  "NVIDIA",
