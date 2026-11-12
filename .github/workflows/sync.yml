@@ -9,19 +9,23 @@ on:
 permissions:
   contents: write
 
+concurrency:
+  group: sync-from-pypi
+  cancel-in-progress: false
+
 jobs:
   sync:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.ref }}
 
       - name: Synchronize from PyPI
-        run: |
-          bash .github/workflows/sync.sh
+        run: bash .github/workflows/sync.sh
 
-      - name: Push changes
-        run: |
-          git push --all --force
-          git push --tags --force
+      - name: Push release commits and tags
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        run: git push --atomic --tags origin "HEAD:${GITHUB_REF}"
